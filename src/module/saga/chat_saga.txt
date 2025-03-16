@@ -1,0 +1,37 @@
+
+import { call, put, select, takeEvery } from "redux-saga/effects";
+import { filter_text } from "../../lib/api/filter";
+import { receiveChat, setInputWord, selectSocketId } from "../slice/chat_slice";
+
+function* findInDicSaga(action) {
+  const socketId = yield select(selectSocketId);
+
+  if (action.payload.type === "message") {
+    try {
+      console.time("api");
+      const word = action.payload.chat;
+      if (socketId === action.payload.socketId) {
+        yield put(
+          setInputWord({ gpt: action.payload.chat, ...action.payload })
+        );
+      } else {
+        const chatgpt = yield call(filter_text, {
+          chat: word,
+          api_key: "4336a62ab2069cee31110575ac69c0dc",
+          option: action.payload.option,
+        });
+        yield put(setInputWord({ gpt: chatgpt.result, ...action.payload }));
+      }
+      console.timeEnd("api");
+    } catch (e) {
+      console.log(e);
+      yield put(setInputWord({ ...action.payload }));
+    }
+  } else {
+    yield put(setInputWord({ ...action.payload }));
+  }
+}
+
+export function* findWordSaga() {
+  yield takeEvery(receiveChat.type, findInDicSaga);
+}
