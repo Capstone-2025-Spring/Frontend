@@ -6,18 +6,30 @@
 ## \*\*📌 1. 코드 구조 (`frontend/`)
 
 아래와 같은 **Flux 아키텍쳐 기반의 디렉토리 구조**를 따릅니다.
+아래는 redux, redux-saga 를 사용한 Flux 아키텍쳐에 익숙해질 수 있게 튜토리얼 counter를 작성한 예제입니다
+각 파일마다 주석을 달아놨으니 읽어보면 편할거에요
 
 ```
-frontend/
-🔸 src/
-    🔸 components/      # UI/UX 컨포넌트
-    🔸 containers/      # 컨테이너 컨포넌트 (Redux 연결)
-    🔸 lib/             # 공용 함수 및 유틸리티티
-    🔸 modules/         # Redux Toolkit Slice (리듀서 & 액션 관리)
-    🔸 store/           # Redux 스토어 설정
-    🔸 styles/          # CSS 및 스타일
-    🔸 App.js           # 메인 컨포넌트
-    🔸 index.js         # 진입점 (Provider 설정)
+frontend/src/
+│── component/         # UI 컴포넌트 (Redux와 분리됨)
+│   ├── Counter.js     # Counter UI 컴포넌트. UI는 여기서만 다룹니다다
+│
+│── container/         # Redux와 연결된 컨테이너 컴포넌트. useSelector와 useDispatch를 사용해서 데이터를 가져옵니다다
+│   ├── CounterContainer.js
+│
+│── module/            # Redux Slice & Redux-Saga 모듈
+│   ├── slice/
+│   │   ├── counter_slice.js  # Redux 상태 및 액션 관리
+│   ├── saga/
+│   │   ├── counter_saga.js   # Redux-Saga를 통한 비동기 처리
+│   ├── index.js              # Redux Slice & Saga를 한 곳에서 관리
+│
+│── store/             # Redux Store 설정
+│   ├── store.js       # Redux Store 및 미들웨어 설정
+│
+│── App.js             # 메인 컴포넌트
+│── index.js           # Redux Provider 설정
+
 ```
 
 ---
