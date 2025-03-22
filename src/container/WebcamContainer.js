@@ -5,15 +5,16 @@ import {
   DrawingUtils,
 } from "@mediapipe/tasks-vision";
 
-const Camera: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [poseLandmarker, setPoseLandmarker] = useState<PoseLandmarker | null>(
-    null
-  );
+import Webcam from "../component/WebCam";
+
+const Camera = () => {
+  const videoRef = useRef < HTMLVideoElement > null;
+  const canvasRef = useRef < HTMLCanvasElement > null;
+  const [poseLandmarker, setPoseLandmarker] =
+    (useState < PoseLandmarker) | (null > null);
   const [isWebcamRunning, setIsWebcamRunning] = useState(false);
-  const animationFrameRef = useRef<number | null>(null);
-  const lastVideoTimeRef = useRef<number>(-1);
+  const animationFrameRef = (useRef < number) | (null > null);
+  const lastVideoTimeRef = useRef < number > -1;
 
   // 📌 1. 모델 초기화
   useEffect(() => {
@@ -81,7 +82,7 @@ const Camera: React.FC = () => {
             PoseLandmarker.POSE_CONNECTIONS
           );
           drawingUtils.drawLandmarks(landmarks, {
-            radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1),
+            radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
           });
         }
       }
@@ -98,44 +99,22 @@ const Camera: React.FC = () => {
       }
 
       if (videoRef.current?.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+        const tracks =
+          videoRef.current.srcObject instanceof MediaStream
+            ? videoRef.current.srcObject.getTracks()
+            : [];
         tracks.forEach((track) => track.stop());
       }
     };
   }, []);
 
   return (
-    <div>
-      <button onClick={enableWebcam} disabled={isWebcamRunning}>
-        {isWebcamRunning ? "웹캠 실행 중" : "웹캠 켜기"}
-      </button>
-
-      <div style={{ position: "relative", width: "1280px", height: "720px" }}>
-        <video
-          ref={videoRef}
-          style={{
-            width: "1280px",
-            height: "720px",
-            position: "absolute",
-            zIndex: 1,
-          }}
-          autoPlay
-          playsInline
-          muted
-        />
-        <canvas
-          ref={canvasRef}
-          width={1280}
-          height={720}
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            zIndex: 2,
-          }}
-        />
-      </div>
-    </div>
+    <Webcam
+      enableWebcam={enableWebcam}
+      isWebcamRunning={isWebcamRunning}
+      videoRef={videoRef}
+      canvasRef={canvasRef}
+    />
   );
 };
 
