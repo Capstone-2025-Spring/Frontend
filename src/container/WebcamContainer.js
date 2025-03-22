@@ -5,16 +5,15 @@ import {
   DrawingUtils,
 } from "@mediapipe/tasks-vision";
 
-import Webcam from "../component/WebCam";
+import Webcam from "../component/Webcam";
 
-const Camera = () => {
-  const videoRef = useRef < HTMLVideoElement > null;
-  const canvasRef = useRef < HTMLCanvasElement > null;
-  const [poseLandmarker, setPoseLandmarker] =
-    (useState < PoseLandmarker) | (null > null);
+const WebcamContainer = () => {
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [poseLandmarker, setPoseLandmarker] = useState(null);
   const [isWebcamRunning, setIsWebcamRunning] = useState(false);
-  const animationFrameRef = (useRef < number) | (null > null);
-  const lastVideoTimeRef = useRef < number > -1;
+  const animationFrameRef = useRef(null);
+  const lastVideoTimeRef = useRef(-1);
 
   // 📌 1. 모델 초기화
   useEffect(() => {
@@ -84,6 +83,8 @@ const Camera = () => {
           drawingUtils.drawLandmarks(landmarks, {
             radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
           });
+
+          console.log(landmarks);
         }
       }
     }
@@ -118,4 +119,4 @@ const Camera = () => {
   );
 };
 
-export default Camera;
+export default WebcamContainer;
