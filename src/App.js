@@ -1,16 +1,12 @@
 import React from "react";
 import CounterContainer from "./container/CounterContainer";
 
-import WebcamContainer from "./container/WebcamContainer";
-
 const App = () => {
   return (
     <div>
       <h1>Redux-Saga Counter</h1>
-      {/* <CounterContainer /> */}
-      <WebcamContainer />
+      <h1>Zustand 기반 Counter</h1>
+      <CounterContainer />
     </div>
   );
 };
-
-export default App;
