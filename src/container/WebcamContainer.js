@@ -17,6 +17,7 @@ const WebcamContainer = () => {
     isWebcamRunning, // 웹캠 실행 여부 상태
     setIsWebcamRunning, // 웹캠 실행 상태 설정 함수
     addLandmarkData, // 랜드마크 데이터를 추가하는 함수 (Zustand)
+    landmarksData,
   } = useWebcamStore();
 
   const animationFrameRef = useRef(null); // 애니메이션 프레임을 관리하는 useRef
@@ -33,21 +34,30 @@ const WebcamContainer = () => {
     initPoseLandmarker(); // 모델 초기화 함수 실행
   }, [setPoseLandmarker]); // 의존성 배열에 setPoseLandmarker 추가
 
-  // 📌 2. 웹캠 시작
-  const enableWebcam = async () => {
-    if (!poseLandmarker) {
-      console.warn("PoseLandmarker not loaded yet.");
-      return; // PoseLandmarker가 로드되지 않았으면, 웹캠 시작하지 않음
-    }
+  // 📌 2. 웹캠 시작 / 종료를 토글하는 함수
+  const toggleWebcam = async () => {
+    if (isWebcamRunning) {
+      // 웹캠이 이미 실행 중이면, 끄는 작업
+      const tracks = videoRef.current?.srcObject?.getTracks() || [];
+      tracks.forEach((track) => track.stop()); // 모든 트랙을 중지하여 웹캠 종료
+      setIsWebcamRunning(false); // 상태 업데이트: 웹캠이 종료되었음을 알림
+      cancelAnimationFrame(animationFrameRef.current); // 애니메이션 루프 중지
+    } else {
+      // 웹캠이 실행 중이지 않으면, 시작하는 작업
+      if (!poseLandmarker) {
+        console.warn("PoseLandmarker not loaded yet.");
+        return; // PoseLandmarker가 로드되지 않았으면, 웹캠 시작하지 않음
+      }
 
-    setIsWebcamRunning(true); // 웹캠 실행 중 상태 업데이트
-    startTimeRef.current = Date.now(); // 비디오 시작 시간 기록
+      setIsWebcamRunning(true); // 상태 업데이트: 웹캠이 실행 중임을 알림
+      startTimeRef.current = Date.now(); // 비디오 시작 시간 기록
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true }); // 웹캠 스트림 요청
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream; // 비디오 스트림을 video DOM 요소에 연결
-      await videoRef.current.play(); // 비디오 재생 시작
-      renderLoop(); // 랜드마크 렌더링 시작
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true }); // 웹캠 스트림 요청
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream; // 비디오 스트림을 video DOM 요소에 연결
+        await videoRef.current.play(); // 비디오 재생 시작
+        renderLoop(); // 랜드마크 렌더링 시작
+      }
     }
   };
 
@@ -95,6 +105,11 @@ const WebcamContainer = () => {
     animationFrameRef.current = requestAnimationFrame(renderLoop); // 다음 프레임에서 다시 실행
   };
 
+  useEffect(() => {
+    //zustand의 state는 비동기로 처리되므로 콘솔을찍으려면 useEffect사용해야함함
+    console.log(landmarksData);
+  }, [landmarksData]);
+
   // 📌 4. 정리 (컴포넌트 언마운트 시 스트림 중지)
   useEffect(() => {
     return () => {
@@ -116,10 +131,11 @@ const WebcamContainer = () => {
 
   return (
     <Webcam
-      enableWebcam={enableWebcam} // 웹캠 시작 함수
+      toggleWebcam={toggleWebcam} // 웹캠 시작 함수
       isWebcamRunning={isWebcamRunning} // 웹캠 실행 상태
       videoRef={videoRef} // 비디오 요소 참조
       canvasRef={canvasRef} // 캔버스 요소 참조
+      landmarksData={landmarksData}
     />
   );
 };
