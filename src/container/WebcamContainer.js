@@ -1,9 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import {
-  FilesetResolver,
-  PoseLandmarker,
-  DrawingUtils,
-} from "@mediapipe/tasks-vision";
+import React, { useEffect, useRef, useState } from "react";
+import { PoseLandmarker, DrawingUtils } from "@mediapipe/tasks-vision";
 import { useWebcamStore } from "../store/webcam_store"; // Zustand 스토어 import
 import Webcam from "../component/Webcam"; // Webcam 컴포넌트 import
 import { initializePoseLandmarker } from "../util/poseLandmarker"; // PoseLandmarker 초기화 함수 import
@@ -16,10 +12,10 @@ const WebcamContainer = () => {
     setPoseLandmarker, // poseLandmarker 설정 함수
     isWebcamRunning, // 웹캠 실행 여부 상태
     setIsWebcamRunning, // 웹캠 실행 상태 설정 함수
-    addLandmarkData, // 랜드마크 데이터를 추가하는 함수 (Zustand)
     landmarksData,
+    updateLandmarkData,
   } = useWebcamStore();
-
+  const [currentLandmarks, setCurrentLandmarks] = useState([]); // 현재 랜드마크 상태 (매 프레임마다 쌓임)
   const animationFrameRef = useRef(null); // 애니메이션 프레임을 관리하는 useRef
   const lastVideoTimeRef = useRef(-1); // 마지막 비디오 시간 (이전 프레임을 추적)
   const startTimeRef = useRef(null); // 비디오 시작 시간을 추적하는 useRef
@@ -42,6 +38,8 @@ const WebcamContainer = () => {
       tracks.forEach((track) => track.stop()); // 모든 트랙을 중지하여 웹캠 종료
       setIsWebcamRunning(false); // 상태 업데이트: 웹캠이 종료되었음을 알림
       cancelAnimationFrame(animationFrameRef.current); // 애니메이션 루프 중지
+
+      updateLandmarkData(currentLandmarks); // 상태에 데이터 저장
     } else {
       // 웹캠이 실행 중이지 않으면, 시작하는 작업
       if (!poseLandmarker) {
@@ -93,10 +91,13 @@ const WebcamContainer = () => {
           });
 
           // 랜드마크 데이터 상태에 추가 (Zustand 상태에 랜드마크 저장)
-          addLandmarkData({
-            timestamp: Date.now(), // 랜드마크 타임스탬프
-            landmarks: landmarks, // 랜드마크 좌표
-          });
+          setCurrentLandmarks((prevLandmarks) => [
+            ...prevLandmarks, // 이전 상태를 모두 복사
+            {
+              timestamp: Date.now(), // 랜드마크 타임스탬프
+              landmarks: landmarks, // 랜드마크 좌표
+            }, // 새로 받은 랜드마크 데이터 추가
+          ]);
         }
       }
     }
