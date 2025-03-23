@@ -1,6 +1,6 @@
 import React from "react";
 
-//sample html 코드 따온 거
+// sample HTML 코드 따온 것
 
 const Webcam = ({ enableWebcam, isWebcamRunning, videoRef, canvasRef }) => {
   return (
