@@ -14,6 +14,7 @@ const WebcamContainer = () => {
     setIsWebcamRunning, // 웹캠 실행 상태 설정 함수
     landmarksData,
     updateLandmarkData,
+    sendLandmarkDataToServer,
   } = useWebcamStore();
   const [currentLandmarks, setCurrentLandmarks] = useState([]); // 현재 랜드마크 상태 (매 프레임마다 쌓임)
   const animationFrameRef = useRef(null); // 애니메이션 프레임을 관리하는 useRef
@@ -40,6 +41,12 @@ const WebcamContainer = () => {
       cancelAnimationFrame(animationFrameRef.current); // 애니메이션 루프 중지
 
       updateLandmarkData(currentLandmarks); // 상태에 데이터 저장
+
+      // 웹캠 종료 시, 랜드마크 데이터를 API로 전송
+      if (currentLandmarks.length > 0) {
+        console.log("API : SendLandmarkDataToServer");
+        sendLandmarkDataToServer(); // Zustand store의 액션으로 API 호출
+      }
     } else {
       // 웹캠이 실행 중이지 않으면, 시작하는 작업
       if (!poseLandmarker) {
