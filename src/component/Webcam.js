@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 // sample HTML 코드 따온 것
 
