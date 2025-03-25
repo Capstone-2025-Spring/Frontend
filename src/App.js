@@ -9,8 +9,8 @@ const App = () => {
     <div>
       <h1>Zustand 기반 Counter</h1>
       <CounterContainer />
-      <WebcamContainer />
-      {/* <Webcam2 /> */}
+      {/* <WebcamContainer /> */}
+      <Webcam2 />
     </div>
   );
 };
