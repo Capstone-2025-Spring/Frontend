@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import {
-  Holistic,
-  Results,
   POSE_CONNECTIONS,
   HAND_CONNECTIONS,
   FACEMESH_TESSELATION,
@@ -19,79 +17,93 @@ const Webcam2Container = () => {
   useEffect(() => {
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
+
+    if (!videoElement || !canvasElement) {
+      console.warn("videoElement or canvasElement not ready yet.");
+      return;
+    }
+
     const canvasCtx = canvasElement.getContext("2d");
 
-    const initHolisticLandmarker = async () => {
+    const setupHolistic = async () => {
       const landmarker = await initializeHolistic();
       setHolisticLandmarker(landmarker);
 
-      initPoseLandmarker();
-    };
+      landmarker.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        enableSegmentation: false,
+        smoothSegmentation: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
 
-    holistic.setOptions({
-      modelComplexity: 1,
-      smoothLandmarks: true,
-      enableSegmentation: false,
-      smoothSegmentation: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5,
-    });
+      landmarker.onResults((results) => {
+        if (!canvasCtx || !canvasElement) return;
 
-    holistic.onResults((results) => {
-      canvasCtx.save();
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-      canvasCtx.drawImage(
-        results.image,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
-
-      if (results.poseLandmarks) {
-        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
-          color: "white",
-        });
-        drawLandmarks(canvasCtx, results.poseLandmarks, {
-          color: "white",
-          fillColor: "rgb(255,138,0)",
-        });
-      }
-
-      if (results.leftHandLandmarks) {
-        drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS, {
-          color: "white",
-        });
-        drawLandmarks(canvasCtx, results.leftHandLandmarks, {
-          color: "rgb(255,138,0)",
-        });
-      }
-
-      if (results.rightHandLandmarks) {
-        drawConnectors(
-          canvasCtx,
-          results.rightHandLandmarks,
-          HAND_CONNECTIONS,
-          {
-            color: "white",
-          }
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(
+          results.image,
+          0,
+          0,
+          canvasElement.width,
+          canvasElement.height
         );
-        drawLandmarks(canvasCtx, results.rightHandLandmarks, {
-          color: "rgb(0,217,231)",
-        });
-      }
 
-      if (results.faceLandmarks) {
-        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {
-          color: "#C0C0C070",
-          lineWidth: 1,
-        });
-      }
+        if (results.poseLandmarks) {
+          drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+            color: "white",
+          });
+          drawLandmarks(canvasCtx, results.poseLandmarks, {
+            color: "white",
+            fillColor: "rgb(255,138,0)",
+          });
+        }
 
-      canvasCtx.restore();
-    });
+        if (results.leftHandLandmarks) {
+          drawConnectors(
+            canvasCtx,
+            results.leftHandLandmarks,
+            HAND_CONNECTIONS,
+            {
+              color: "white",
+            }
+          );
+          drawLandmarks(canvasCtx, results.leftHandLandmarks, {
+            color: "rgb(255,138,0)",
+          });
+        }
 
-    const startCamera = async () => {
+        if (results.rightHandLandmarks) {
+          drawConnectors(
+            canvasCtx,
+            results.rightHandLandmarks,
+            HAND_CONNECTIONS,
+            {
+              color: "white",
+            }
+          );
+          drawLandmarks(canvasCtx, results.rightHandLandmarks, {
+            color: "rgb(0,217,231)",
+          });
+        }
+
+        if (results.faceLandmarks) {
+          drawConnectors(
+            canvasCtx,
+            results.faceLandmarks,
+            FACEMESH_TESSELATION,
+            {
+              color: "#C0C0C070",
+              lineWidth: 1,
+            }
+          );
+        }
+
+        canvasCtx.restore();
+      });
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: false,
@@ -100,16 +112,17 @@ const Webcam2Container = () => {
       videoElement.play();
 
       const onFrame = async () => {
-        await holistic.send({ image: videoElement });
+        await landmarker.send({ image: videoElement });
         requestAnimationFrame(onFrame);
       };
       onFrame();
     };
 
-    startCamera();
+    setupHolistic();
 
     return () => {
-      holistic.close();
+      if (holistic && holistic.close) holistic.close();
+
       if (videoElement.srcObject) {
         const tracks = videoElement.srcObject.getTracks();
         tracks.forEach((track) => track.stop());
