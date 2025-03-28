@@ -1,18 +1,17 @@
 import React, { useEffect, useRef } from "react";
-import {
-  POSE_CONNECTIONS,
-  HAND_CONNECTIONS,
-  FACEMESH_TESSELATION,
-} from "@mediapipe/holistic";
-import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { useWebcam2Store } from "../store/webcam2_store";
 import Webcam2 from "../component/Webcam2";
-import { initializeHolistic } from "../util/holisticMarker";
+import { initWebcam } from "../util/webcam/init_webcam";
+import { setupHolistic } from "../util/holistic/setup_holistic";
 
 const Webcam2Container = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const { holistic, setHolisticLandmarker } = useWebcam2Store();
+
+  const { holistic, setHolisticLandmarker, isRecording, updateHolisticData } =
+    useWebcam2Store();
+
+  const last_saved_time = useRef(0); // 마지막으로 저장된 시간을 기록 (1초 간격 저장)
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -23,112 +22,39 @@ const Webcam2Container = () => {
       return;
     }
 
-    const canvasCtx = canvasElement.getContext("2d");
+    const start = async () => {
+      await initWebcam(videoElement); // 웹캠 초기화
 
-    const setupHolistic = async () => {
-      const landmarker = await initializeHolistic();
-      setHolisticLandmarker(landmarker);
-
-      landmarker.setOptions({
-        modelComplexity: 1,
-        smoothLandmarks: true,
-        enableSegmentation: false,
-        smoothSegmentation: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-
-      landmarker.onResults((results) => {
-        if (!canvasCtx || !canvasElement) return;
-
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        canvasCtx.drawImage(
-          results.image,
-          0,
-          0,
-          canvasElement.width,
-          canvasElement.height
-        );
-
-        if (results.poseLandmarks) {
-          drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
-            color: "white",
-          });
-          drawLandmarks(canvasCtx, results.poseLandmarks, {
-            color: "white",
-            fillColor: "rgb(255,138,0)",
-          });
+      await setupHolistic(
+        videoElement,
+        canvasElement,
+        setHolisticLandmarker,
+        (results) => {
+          const now = Date.now();
+          const recording = useWebcam2Store.getState().isRecording;
+          // 🔥 녹화 중이고, 1초(1000ms)마다만 데이터를 저장하는 로직 추가
+          if (recording && now - last_saved_time.current >= 1000) {
+            last_saved_time.current = now; // 마지막 저장 시간 갱신
+            updateHolisticData({
+              timestamp: now,
+              results, // Holistic 결과 데이터 저장
+            });
+            console.log("✅ Holistic data saved at:", new Date(now));
+          }
         }
-
-        if (results.leftHandLandmarks) {
-          drawConnectors(
-            canvasCtx,
-            results.leftHandLandmarks,
-            HAND_CONNECTIONS,
-            {
-              color: "white",
-            }
-          );
-          drawLandmarks(canvasCtx, results.leftHandLandmarks, {
-            color: "rgb(255,138,0)",
-          });
-        }
-
-        if (results.rightHandLandmarks) {
-          drawConnectors(
-            canvasCtx,
-            results.rightHandLandmarks,
-            HAND_CONNECTIONS,
-            {
-              color: "white",
-            }
-          );
-          drawLandmarks(canvasCtx, results.rightHandLandmarks, {
-            color: "rgb(0,217,231)",
-          });
-        }
-
-        if (results.faceLandmarks) {
-          drawConnectors(
-            canvasCtx,
-            results.faceLandmarks,
-            FACEMESH_TESSELATION,
-            {
-              color: "#C0C0C070",
-              lineWidth: 1,
-            }
-          );
-        }
-
-        canvasCtx.restore();
-      });
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
-      videoElement.srcObject = stream;
-      videoElement.play();
-
-      const onFrame = async () => {
-        await landmarker.send({ image: videoElement });
-        requestAnimationFrame(onFrame);
-      };
-      onFrame();
+      );
     };
 
-    setupHolistic();
+    start();
 
+    // 웹캠 종료 및 Holistic 모델 정리 작업
     return () => {
-      if (holistic && holistic.close) holistic.close();
-
-      if (videoElement.srcObject) {
-        const tracks = videoElement.srcObject.getTracks();
-        tracks.forEach((track) => track.stop());
+      if (holistic?.close) holistic.close();
+      if (videoElement?.srcObject) {
+        videoElement.srcObject.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [setHolisticLandmarker]);
+  }, [setHolisticLandmarker, holistic, updateHolisticData]);
 
   return <Webcam2 videoRef={videoRef} canvasRef={canvasRef} />;
 };

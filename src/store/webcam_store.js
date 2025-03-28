@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { preprocessPoseLandmarkerData } from "../api/LandmarkApi";
+import { preprocessPoseLandmarkerData } from "../api/video/upload_landmark_data";
 
 export const useWebcamStore = create((set, get) => ({
   isWebcamRunning: false, // 웹캠 실행 상태
