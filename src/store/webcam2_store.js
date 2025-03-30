@@ -7,9 +7,33 @@ export const useWebcam2Store = create((set, get) => ({
   holisticData: [],
   processedHolisticData: null,
 
+  videoChunks: [],
+  mediaRecorder: null,
+
   setHolisticLandmarker: (landmarker) => {
     console.log("🎯 setHolisticLandmarker 호출됨:", landmarker);
     set({ holisticLandmarker: landmarker });
+  },
+
+  setMediaRecorder: (recorder) => set({ mediaRecorder: recorder }),
+  pushVideoChunk: (chunk) =>
+    set((state) => ({ videoChunks: [...state.videoChunks, chunk] })),
+  clearVideoChunks: () => set({ videoChunks: [] }),
+
+  saveVideoFile: () => {
+    const chunks = get().videoChunks;
+    if (!chunks.length) return;
+
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "interview_recording.webm";
+    a.click();
+
+    URL.revokeObjectURL(url);
+    set({ videoChunks: [] });
   },
 
   startRecording: () => {

@@ -8,8 +8,14 @@ const Webcam2Container = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
-  const { holistic, setHolisticLandmarker, isRecording, updateHolisticData } =
-    useWebcam2Store();
+  const {
+    holistic,
+    setHolisticLandmarker,
+    isRecording,
+    updateHolisticData,
+    setMediaRecorder,
+    pushVideoChunk,
+  } = useWebcam2Store();
 
   const last_saved_time = useRef(0); // 마지막으로 저장된 시간을 기록 (1초 간격 저장)
 
@@ -24,6 +30,19 @@ const Webcam2Container = () => {
 
     const start = async () => {
       await initWebcam(videoElement); // 웹캠 초기화
+      const stream = videoElement.srcObject;
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: "video/webm",
+      });
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          pushVideoChunk(event.data);
+        }
+      };
+
+      setMediaRecorder(mediaRecorder);
 
       await setupHolistic(
         videoElement,

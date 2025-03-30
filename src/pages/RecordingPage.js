@@ -1,46 +1,91 @@
 // src/pages/RecordingPage.js
-import React from "react"; // React 라이브러리 import
-import { useWebcam2Store } from "../store/webcam2_store"; // Zustand로 관리하는 웹캠 관련 상태 관리 스토어 import
-import { useAudioStore } from "../store/audio_store"; // Zustand로 관리하는 오디오 관련 상태 관리 스토어 import
-import Webcam2Container from "../container/Webcam2Container"; // 웹캠 및 Holistic 분석을 담당하는 컨테이너 컴포넌트 import
+import React from "react";
+import { useWebcam2Store } from "../store/webcam2_store";
+import { useAudioStore } from "../store/audio_store";
+import Webcam2Container from "../container/Webcam2Container";
+import { useNavigate } from "react-router-dom";
 
 const RecordingPage = () => {
-  // `useWebcam2Store`에서 녹화 상태 및 관련 함수들 가져오기
   const {
-    isRecording, // 녹화 상태: true/false
-    startRecording, // 녹화 시작 함수
-    stopRecording, // 녹화 종료 함수
-    sendHolisticDataToServer, // 서버로 Holistic 데이터 전송 함수
+    isRecording,
+    startRecording,
+    stopRecording,
+    sendHolisticDataToServer,
+    mediaRecorder,
+    saveVideoFile,
+    clearVideoChunks,
   } = useWebcam2Store();
 
-  // `useAudioStore`에서 오디오 녹음 관련 함수들 가져오기
   const { startAudioRecording, stopAudioRecording } = useAudioStore();
+  const navigate = useNavigate();
 
-  // 녹화/녹음 시작/중지 버튼 클릭 시 실행되는 함수
   const handleToggleRecording = async () => {
     if (isRecording) {
-      // 녹화 중일 경우
-      stopRecording(); // 녹화 종료
-      stopAudioRecording(); // 오디오 녹음 종료
-      await sendHolisticDataToServer(); // Holistic 데이터를 서버로 전송
+      stopRecording();
+      stopAudioRecording();
+      await sendHolisticDataToServer();
+
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop(); // ✅ 영상 녹화 중지
+      }
+
+      await sendHolisticDataToServer();
+      saveVideoFile(); // ✅ 영상 다운로드
+      clearVideoChunks();
+
+      // ReportPage로 이동
+      navigate("/report");
     } else {
-      // 녹화 중이 아닐 경우
-      startRecording(); // 녹화 시작
-      startAudioRecording(); // 오디오 녹음 시작
+      startRecording();
+      startAudioRecording();
+
+      const recorder = mediaRecorder;
+      if (recorder && recorder.state === "inactive") {
+        recorder.start(); // ✅ 이 줄 꼭 추가!
+        console.log("🎥 MediaRecorder started");
+      }
     }
   };
 
+  const containerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "2rem",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    backgroundColor: "#f9fafb",
+    minHeight: "100vh",
+  };
+
+  const titleStyle = {
+    fontSize: "1.8rem",
+    marginBottom: "1rem",
+  };
+
+  const buttonStyle = {
+    padding: "1rem 2rem",
+    fontSize: "1.2rem",
+    borderRadius: "8px",
+    border: "none",
+    backgroundColor: isRecording ? "#ef4444" : "#10b981", // 빨간색: 정지, 초록색: 시작
+    color: "#fff",
+    cursor: "pointer",
+    marginBottom: "2rem",
+    transition: "background-color 0.3s ease",
+  };
+
   return (
-    <div>
-      <h2>▶️ Recording Page</h2>
-      {/* 녹화 상태에 따라 버튼 텍스트 변경 */}
-      <button onClick={handleToggleRecording}>
-        {isRecording ? "⏹️ Stop Recording" : "▶️ Start Recording"}
+    <div style={containerStyle}>
+      <h2 style={titleStyle}>🎥 면접 녹화 중</h2>
+
+      <button onClick={handleToggleRecording} style={buttonStyle}>
+        {isRecording ? "⏹️ 녹화 종료" : "▶️ 녹화 시작"}
       </button>
-      {/* Webcam2Container를 렌더링하여 웹캠 비디오와 Holistic 분석을 보여줌 */}
+
+      {/* 웹캠 및 분석 화면 */}
       <Webcam2Container />
     </div>
   );
 };
 
-export default RecordingPage; // 이 페이지 컴포넌트를 다른 곳에서 사용하기 위해 export
+export default RecordingPage;
