@@ -38,6 +38,12 @@ const RecordingPage = () => {
     } else {
       startRecording();
       startAudioRecording();
+
+      const recorder = mediaRecorder;
+      if (recorder && recorder.state === "inactive") {
+        recorder.start(); // ✅ 이 줄 꼭 추가!
+        console.log("🎥 MediaRecorder started");
+      }
     }
   };
 

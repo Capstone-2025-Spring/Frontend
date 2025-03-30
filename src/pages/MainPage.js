@@ -2,64 +2,93 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
+  const navigate = useNavigate();
+
   const containerStyle = {
+    minHeight: "100vh",
+    background: "#ffffff", // 배경 흰색
+    padding: "3rem 1rem",
+    color: "#1e3a8a", // 텍스트 파란색
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    background: "linear-gradient(to bottom, #f0f4f8, #d9e2ec)",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   };
 
-  const titleStyle = {
-    fontSize: "2.5rem",
+  const sloganStyle = {
+    fontSize: "1.8rem",
+    fontWeight: "bold",
     marginBottom: "2rem",
-    color: "#333",
+    textAlign: "center",
+    lineHeight: 1.5,
+    color: "#1e3a8a", // 짙은 파랑
+  };
+
+  const cardStyle = {
+    backgroundColor: "#f0f4ff", // 연한 파란 배경
+    color: "#1e40af", // 카드 내부 글씨 파란색
+    borderRadius: "16px",
+    padding: "2rem",
+    width: "100%",
+    maxWidth: "500px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
+    marginBottom: "2rem",
+    textAlign: "center",
+  };
+
+  const cardTitle = {
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    marginBottom: "0.5rem",
+  };
+
+  const cardText = {
+    marginBottom: "1rem",
+    color: "#374151", // 약간 진한 회색
   };
 
   const buttonStyle = {
     padding: "1rem 2rem",
-    margin: "0.5rem",
-    fontSize: "1.2rem",
-    borderRadius: "8px",
+    borderRadius: "10px",
     border: "none",
-    backgroundColor: "#4f46e5",
+    backgroundColor: "#3b82f6", // 파란 버튼
     color: "#fff",
+    fontSize: "1rem",
+    fontWeight: "bold",
     cursor: "pointer",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    transition: "background-color 0.3s ease",
+    margin: "0.5rem 0",
+    width: "100%",
+    transition: "all 0.2s ease-in-out",
   };
 
-  const hoverButtonStyle = {
+  const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#4338ca",
+    backgroundColor: "#93c5fd", // 연한 파랑
+    color: "#1e3a8a",
   };
-
-  // 간단한 hover 효과 구현
-  const [hoveredButton, setHoveredButton] = React.useState(null);
-
-  const navigate = useNavigate();
 
   return (
     <div style={containerStyle}>
-      <h1 style={titleStyle}>시작하기</h1>
-      <button
-        style={hoveredButton === "start" ? hoverButtonStyle : buttonStyle}
-        onMouseEnter={() => setHoveredButton("start")}
-        onMouseLeave={() => setHoveredButton(null)}
-        onClick={() => navigate("/checkMedia")}
-      >
-        모의 면접 시작
-      </button>
-      <button
-        style={hoveredButton === "write" ? hoverButtonStyle : buttonStyle}
-        onMouseEnter={() => setHoveredButton("write")}
-        onMouseLeave={() => setHoveredButton(null)}
-      >
-        Login/Sign(현재 미구현 상태)
-      </button>
-      {/* 채용 일정 및 최신 뉴스 컴포넌트 추가 */}
+      <div style={sloganStyle}>
+        오늘도 한다면 한다! <br />
+        자신감 있는 강의!!🔥
+      </div>
+
+      <div style={cardStyle}>
+        <div style={cardTitle}>수업 하러가기 👍</div>
+        <div style={cardText}>
+          강의력에 자신이 없으세요? <br />
+        </div>
+        <button style={buttonStyle} onClick={() => navigate("/checkMedia")}>
+          수업 하러가기
+        </button>
+        <button
+          style={secondaryButtonStyle}
+          onClick={() => navigate("/question")}
+        >
+          Login/SignUp (미구현)
+        </button>
+      </div>
     </div>
   );
 };

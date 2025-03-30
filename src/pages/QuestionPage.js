@@ -4,25 +4,16 @@ import { useNavigate } from "react-router-dom";
 const QuestionPage = () => {
   const [questions, setQuestions] = useState("");
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate(); // 페이지 이동 훅
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // if (!questions.trim()) {
-    //   alert("질문을 입력해주세요!");
-    //   return;
-    // }
-
+  const handleNext = () => {
     console.log("입력된 질문:", questions);
-
-    // SettingPage로 이동
     navigate("/settings", {
-      state: { questions }, // 원한다면 질문 내용 전달 가능
+      state: { questions },
     });
   };
 
-  // 스타일 정의
+  // 스타일
   const containerStyle = {
     display: "flex",
     flexDirection: "column",
@@ -31,10 +22,11 @@ const QuestionPage = () => {
     height: "100vh",
     backgroundColor: "#f9fafb",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    padding: "2rem",
   };
 
-  const formStyle = {
-    width: "90%",
+  const boxStyle = {
+    width: "100%",
     maxWidth: "600px",
     backgroundColor: "#ffffff",
     padding: "2rem",
@@ -45,7 +37,6 @@ const QuestionPage = () => {
   const textareaStyle = {
     width: "100%",
     height: "150px",
-    padding: "1rem",
     fontSize: "1rem",
     borderRadius: "8px",
     border: "1px solid #ccc",
@@ -58,24 +49,44 @@ const QuestionPage = () => {
     fontSize: "1.1rem",
     borderRadius: "8px",
     border: "none",
-    backgroundColor: "#10b981", // emerald-500
+    backgroundColor: "#10b981",
     color: "#fff",
     cursor: "pointer",
     transition: "background-color 0.3s ease",
   };
 
+  const noticeStyle = {
+    fontSize: "0.95rem",
+    lineHeight: "1.6",
+    color: "#444",
+    marginBottom: "2rem",
+  };
+
   return (
     <div style={containerStyle}>
-      <form style={formStyle} onSubmit={handleSubmit}>
-        <h1>임시 페이지</h1>
+      <div style={boxStyle}>
+        <h2 style={{ marginBottom: "1rem" }}>📌 서비스 이용 시 주의사항</h2>
+        <div style={noticeStyle}>
+          <p>1. 본 서비스는 면접 녹화 및 음성 분석 기능을 포함하고 있습니다.</p>
+          <p>
+            2. 수집된 데이터는 분석 및 리포트 생성에만 사용되며, 외부로 유출되지
+            않습니다.
+          </p>
+          <p>
+            3. 음성 및 영상 녹화 시 개인정보가 포함되지 않도록 주의해주세요.
+          </p>
+          <p>4. 분석 결과는 참고용이며, 실제 면접 결과와 다를 수 있습니다.</p>
+        </div>
+
         <textarea
           value={questions}
           onChange={(e) => setQuestions(e.target.value)}
-          placeholder="질문을 입력하세요."
+          placeholder="빈 텍스트 공간"
           style={textareaStyle}
         />
+
         <button
-          type="submit"
+          onClick={handleNext}
           style={{
             ...buttonStyle,
             backgroundColor: isHovered
@@ -87,7 +98,7 @@ const QuestionPage = () => {
         >
           다음
         </button>
-      </form>
+      </div>
     </div>
   );
 };

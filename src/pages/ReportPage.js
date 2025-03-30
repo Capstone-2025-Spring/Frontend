@@ -56,7 +56,7 @@ const ReportPage = () => {
 
   return (
     <div style={containerStyle}>
-      <h2 style={titleStyle}>면접 분석 리포트</h2>
+      <h2 style={titleStyle}>분석 레포트</h2>
 
       <section style={sectionStyle}>
         <h3 style={sectionTitleStyle}>1. 어휘 분석 - 부적절 사용 예시</h3>
