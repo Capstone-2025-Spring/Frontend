@@ -1,185 +1,201 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useConfigStore } from "../store/config_store";
+import { handlePdfUploadWithValidation } from "../util/pdf/pdfHandler";
 
 const SettingsPage = () => {
-  const [category, setCategory] = useState("");
-  const [schoolLevel, setSchoolLevel] = useState("");
-  const [subject, setSubject] = useState("");
-  const [questionCount, setQuestionCount] = useState(5);
-  const [answerTime, setAnswerTime] = useState(60);
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const [videoEnabled, setVideoEnabled] = useState(false);
-  const [pdfFile, setPdfFile] = useState(null); // ✅ PDF 파일 상태 추가
-
   const navigate = useNavigate();
+  const { user_options, update_user_option, load_user_options_from_file } =
+    useConfigStore();
+
+  useEffect(() => {
+    load_user_options_from_file();
+  }, []);
 
   const handleStartInterview = () => {
-    const settings = {
-      category,
-      schoolLevel,
-      subject,
-      questionCount,
-      answerTime,
-      audioEnabled,
-      videoEnabled,
-      pdfFile, // ✅ 파일도 함께 저장 (선택)
-    };
-
-    console.log("설정된 값:", settings);
-    navigate("/recording", { state: settings });
+    console.log("설정:", user_options);
+    navigate("/recording", { state: user_options });
   };
 
-  const handlePdfUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type === "application/pdf") {
-      setPdfFile(file);
-    } else {
-      alert("PDF 파일만 업로드 가능합니다.");
-    }
+  const pageStyle = {
+    width: "100vw",
+    height: "100vh",
+    overflowY: "auto",
+    backgroundColor: "#f3f4f6",
+    padding: "2rem",
+    fontFamily: "sans-serif",
   };
 
-  // 스타일 정의는 그대로 유지
-  const containerStyle = {
+  const formContainer = {
     maxWidth: "600px",
     margin: "0 auto",
+    backgroundColor: "#fff",
     padding: "2rem",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    backgroundColor: "#f9fafb",
-    borderRadius: "12px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    borderRadius: "16px",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
   };
 
-  const titleStyle = {
-    fontSize: "1.8rem",
-    textAlign: "center",
-    marginBottom: "2rem",
-    color: "#333",
-  };
-
-  const formGroupStyle = {
+  const section = {
     marginBottom: "1.5rem",
   };
 
-  const labelStyle = {
+  const label = {
     display: "block",
-    marginBottom: "0.5rem",
     fontWeight: "600",
-    color: "#555",
+    marginBottom: "0.5rem",
+    color: "#333",
   };
 
-  const inputStyle = {
+  const input = {
     width: "100%",
-    padding: "0.5rem",
-    borderRadius: "6px",
+    padding: "0.6rem",
     border: "1px solid #ccc",
+    borderRadius: "8px",
     fontSize: "1rem",
   };
 
-  const checkboxStyle = {
-    marginRight: "0.5rem",
-  };
-
-  const buttonStyle = {
+  const button = {
     width: "100%",
     padding: "1rem",
     fontSize: "1.1rem",
-    borderRadius: "8px",
     border: "none",
+    borderRadius: "10px",
     backgroundColor: "#3b82f6",
     color: "#fff",
     cursor: "pointer",
-    transition: "background-color 0.3s ease",
   };
 
   return (
-    <div style={containerStyle}>
-      <h2 style={titleStyle}>Setting</h2>
+    <div style={pageStyle}>
+      <div style={formContainer}>
+        <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>
+          ✏️ 수업 시뮬레이션 설정
+        </h2>
 
-      {/* 제목 */}
-      <div style={formGroupStyle}>
-        <label style={labelStyle}>이번 연습 제목</label>
-        <input
-          type="text"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          placeholder="예: 2025-03-01 초등 수학 3학년 강의 연습"
-          style={inputStyle}
-        />
-      </div>
-
-      {/* 수업 시연 대상 */}
-      <div style={formGroupStyle}>
-        <label style={labelStyle}>수업 시연 대상</label>
-        <select
-          value={schoolLevel}
-          onChange={(e) => setSchoolLevel(e.target.value)}
-          style={inputStyle}
-        >
-          <option value="">선택하세요</option>
-          <option value="초등학교">초등학교</option>
-          <option value="중학교">중학교</option>
-          <option value="고등학교">고등학교</option>
-        </select>
-      </div>
-
-      {/* 과목 */}
-      <div style={formGroupStyle}>
-        <label style={labelStyle}>과목</label>
-        <select
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          style={inputStyle}
-        >
-          <option value="">선택하세요</option>
-          <option value="수학">수학</option>
-          <option value="영어">영어</option>
-          <option value="과학">과학</option>
-          <option value="국어">국어</option>
-        </select>
-      </div>
-
-      {/* PDF 업로드 */}
-      <div style={formGroupStyle}>
-        <label style={labelStyle}>참고용 수업자료 (PDF)</label>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={handlePdfUpload}
-          style={inputStyle}
-        />
-        {pdfFile && (
-          <p style={{ marginTop: "0.5rem", color: "#333" }}>
-            선택된 파일: {pdfFile.name}
-          </p>
-        )}
-      </div>
-
-      {/* 오디오 / 비디오 설정 */}
-      <div style={formGroupStyle}>
-        <label style={labelStyle}>
+        <div style={section}>
+          <label style={label}>연습 제목</label>
           <input
-            type="checkbox"
-            checked={audioEnabled}
-            onChange={(e) => setAudioEnabled(e.target.checked)}
-            style={checkboxStyle}
+            type="text"
+            value={user_options.category}
+            onChange={(e) => update_user_option("category", e.target.value)}
+            style={input}
           />
-          오디오 녹음 활성화
-        </label>
-        <label style={labelStyle}>
-          <input
-            type="checkbox"
-            checked={videoEnabled}
-            onChange={(e) => setVideoEnabled(e.target.checked)}
-            style={checkboxStyle}
-          />
-          비디오 녹화 활성화
-        </label>
-      </div>
+        </div>
 
-      {/* 시작 버튼 */}
-      <button style={buttonStyle} onClick={handleStartInterview}>
-        수업 시작
-      </button>
+        <div style={section}>
+          <label style={label}>학교급</label>
+          <select
+            value={user_options.school_level}
+            onChange={(e) => update_user_option("school_level", e.target.value)}
+            style={input}
+          >
+            <option value="">선택</option>
+            <option value="초등학교">초등학교</option>
+            <option value="중학교">중학교</option>
+            <option value="고등학교">고등학교</option>
+          </select>
+        </div>
+
+        <div style={section}>
+          <label style={label}>과목</label>
+          <select
+            value={user_options.subject}
+            onChange={(e) => update_user_option("subject", e.target.value)}
+            style={input}
+          >
+            <option value="">선택</option>
+            <option value="수학">수학</option>
+            <option value="영어">영어</option>
+            <option value="과학">과학</option>
+            <option value="국어">국어</option>
+          </select>
+        </div>
+
+        <div style={section}>
+          <label style={label}>학생 나이</label>
+          <input
+            type="number"
+            value={user_options.age_group}
+            onChange={(e) => update_user_option("age_group", e.target.value)}
+            style={input}
+          />
+        </div>
+
+        <div style={section}>
+          <label style={label}>학급 크기</label>
+          <select
+            value={user_options.class_size}
+            onChange={(e) => update_user_option("class_size", e.target.value)}
+            style={input}
+          >
+            <option value="">선택</option>
+            <option value="소규모">소규모</option>
+            <option value="일반">일반</option>
+            <option value="대규모">대규모</option>
+          </select>
+        </div>
+
+        <div style={section}>
+          <label style={label}>학생 유형</label>
+          <select
+            value={user_options.student_type}
+            onChange={(e) => update_user_option("student_type", e.target.value)}
+            style={input}
+          >
+            <option value="">선택</option>
+            <option value="조용한 반">조용한 반</option>
+            <option value="시끄러운 반">시끄러운 반</option>
+            <option value="질문 많은 반">질문 많은 반</option>
+          </select>
+        </div>
+
+        <div style={section}>
+          <label style={label}>PDF 수업자료 업로드</label>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) =>
+              handlePdfUploadWithValidation(e, update_user_option)
+            }
+            style={input}
+          />
+          {user_options.pdf_file && (
+            <p style={{ marginTop: "0.5rem", fontSize: "0.9rem" }}>
+              📎 {user_options.pdf_file.name}
+            </p>
+          )}
+        </div>
+
+        <div style={section}>
+          <label>
+            <input
+              type="checkbox"
+              checked={user_options.audio_enabled}
+              onChange={(e) =>
+                update_user_option("audio_enabled", e.target.checked)
+              }
+              style={{ marginRight: "0.5rem" }}
+            />
+            오디오 녹음
+          </label>
+          <br />
+          <label>
+            <input
+              type="checkbox"
+              checked={user_options.video_enabled}
+              onChange={(e) =>
+                update_user_option("video_enabled", e.target.checked)
+              }
+              style={{ marginRight: "0.5rem" }}
+            />
+            비디오 녹화
+          </label>
+        </div>
+
+        <button onClick={handleStartInterview} style={button}>
+          수업 시작 🚀
+        </button>
+      </div>
     </div>
   );
 };

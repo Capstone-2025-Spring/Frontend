@@ -1,9 +1,11 @@
 // src/pages/RecordingPage.js
 import React from "react";
-import { useWebcam2Store } from "../store/webcam2_store";
-import { useAudioStore } from "../store/audio_store";
-import Webcam2Container from "../container/Webcam2Container";
 import { useNavigate } from "react-router-dom";
+import { sendConfigToBackend } from "../api/config/sendConfigToBackend";
+import Webcam2Container from "../container/Webcam2Container";
+import { useAudioStore } from "../store/audio_store";
+import { useWebcam2Store } from "../store/webcam2_store";
+import { exportConfigToJson } from "../util/config/config_exporter";
 
 const RecordingPage = () => {
   const {
@@ -23,17 +25,19 @@ const RecordingPage = () => {
     if (isRecording) {
       stopRecording();
       stopAudioRecording();
-      await sendHolisticDataToServer();
+
+      //설정 저장 및 서버 전송
+      exportConfigToJson();
+      await sendConfigToBackend();
 
       if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop(); // ✅ 영상 녹화 중지
+        mediaRecorder.stop();
       }
 
       await sendHolisticDataToServer();
-      saveVideoFile(); // ✅ 영상 다운로드
+      saveVideoFile();
       clearVideoChunks();
 
-      // ReportPage로 이동
       navigate("/report");
     } else {
       startRecording();
@@ -41,7 +45,7 @@ const RecordingPage = () => {
 
       const recorder = mediaRecorder;
       if (recorder && recorder.state === "inactive") {
-        recorder.start(); // ✅ 이 줄 꼭 추가!
+        recorder.start();
         console.log("🎥 MediaRecorder started");
       }
     }
