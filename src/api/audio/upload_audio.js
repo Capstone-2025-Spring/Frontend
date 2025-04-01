@@ -3,10 +3,10 @@ import axios from "axios";
 
 export const upload_audio = async (blob) => {
   const form_data = new FormData();
-  form_data.append("file", blob, "audio.wav");
+  form_data.append("file", blob, "audio.mp3");
 
   try {
-    const response = await axios.post("/api/upload-audio", form_data, {
+    const response = await axios.post("/api/upload/audio", form_data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
