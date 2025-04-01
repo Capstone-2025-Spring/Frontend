@@ -54,5 +54,5 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.17"
   },
-  "proxy": "http://your-ec2-url:5000"
+  "proxy": "http://3.39.25.136:8080"
 }
