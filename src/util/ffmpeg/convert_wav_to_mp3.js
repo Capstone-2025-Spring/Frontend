@@ -15,23 +15,29 @@ export const ConvertWavToMp3 = async (webmBlob) => {
       await ffmpeg.load();
     }
 
-    const fileName = "input.wav";
-    ffmpeg.FS("writeFile", fileName, await fetchFile(webmBlob));
-    await ffmpeg.run(
+    // 1. 파일 시스템에 WebM 파일 쓰기
+    await ffmpeg.writeFile("input.wav", await fetchFile(webmBlob));
+
+    // 2. 변환 실행
+    await ffmpeg.exec([
       "-i",
-      fileName,
+      "input.wav",
       "-codec:a",
       "libmp3lame",
       "-qscale:a",
       "2",
-      "output.mp3"
-    );
+      "output.mp3",
+    ]);
 
-    const data = ffmpeg.FS("readFile", "output.mp3");
-    const mp3Blob = new Blob([data.buffer], { type: "audio/mpeg" });
+    // 3. 변환된 MP3 파일 읽기
+    const data = await ffmpeg.readFile("output.mp3");
+
+    // 4. Blob으로 변환
+    const mp3Blob = new Blob([data.buffer], { type: "audio/mp3" });
 
     return mp3Blob;
   } catch (error) {
-    console.error("❌ MP3 변환 실패:", error);
+    console.error("❌ FFmpeg 변환 오류:", error);
+    return null;
   }
 };
