@@ -1,13 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import RecordingPage from "./pages/RecordingPage";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import AdminPromptPage from "./pages/AdminPromptPage";
+import CheckMediaPage from "./pages/CheckMediaPage";
 import MainPage from "./pages/MainPage";
 import QuestionPage from "./pages/QuestionPage";
+import RecordingPage from "./pages/RecordingPage";
 import ReportPage from "./pages/ReportPage";
 import SettingPage from "./pages/SettingPage";
-import CheckMediaPage from "./pages/CheckMediaPage";
-
 const App = () => {
   return (
     <Router>
@@ -18,6 +17,7 @@ const App = () => {
         <Route path="/settings" element={<SettingPage />} />
         <Route path="/recording" element={<RecordingPage />} />
         <Route path="/report" element={<ReportPage />} />
+        <Route path="/admin" element={<AdminPromptPage />} />
       </Routes>
     </Router>
   );

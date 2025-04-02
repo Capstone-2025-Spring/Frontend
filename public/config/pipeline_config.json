@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "modules": [
+    {
+      "id": "1",
+      "name": "COTModuleBox",
+      "position": { "x": 100, "y": 100 },
+      "prompt": "Create COT(Chain of Thought) reasoning Steps logically based on given input data and criteria \n Lecture Script(STT) : Hello my name is ...... \n Video Caption : [00:01]~[01:11] He's writing texts on the board behind of him \n Criteria : [clarity, accuracy,depth]",
+      "inputs": ["Lecture Script(STT)", "Video Caption", "Criteria"],
+      "outputs": ["CoT Reasoning Steps"]
+    },
+    {
+      "id": "2",
+      "name": "GEvalModuleBox",
+      "position": { "x": 400, "y": 100 },
+      "prompt": "You will be given data from a simulated teacher's lecture. \n Your task is to evaluate the **word choice** used in the lecture on a scale from 1 to 10. \n Please consider if the chosen words are clear, contextually appropriate, varied, and engaging for learners. \n Evaluation Steps: \n1. Read the STT-transcribed lecture and identify key terms and expressions used.\n2. Check whether the words are contextually appropriate for the lesson topic.\n3. Evaluate if the vocabulary is engaging and understandable for students.\n4. Consider prosody—did word emphasis align with intent?\n5. Reflect on nonverbal cues—did gestures or expressions reinforce chosen words?\n6. Assign a score for word choice on a scale of 1 to 10.\n7. Explain briefly why you chose this score, referring to specific parts of the input.\nSTT Transcript : Today we're going to explore how gravity affects motion. Let's imagine Evaluation Criteria",
+      "inputs": ["CoT Result"],
+      "outputs": ["G-Eval Score"],
+      "criteria": ["clarity", "accuracy", "depth"]
+    },
+    {
+      "id": "3",
+      "name": "SAGEvalModuleBox",
+      "position": { "x": 700, "y": 100 },
+      "prompt": "Reference-free scoring adjustment.",
+      "criteria": ["clarity", "accuracy", "depth"],
+      "inputs": ["G-Eval Score"],
+      "outputs": ["Refined Score"]
+    },
+    {
+      "id": "4",
+      "name": "FactCheckerModuleBox",
+      "position": { "x": 250, "y": 500 },
+      "prompt": "Fact consistency checker",
+      "reference": [],
+      "inputs": ["Lecture Script", "CoT Result"],
+      "outputs": ["Fact Match Score"]
+    },
+    {
+      "id": "5",
+      "name": "TruthGroundedModuleBox",
+      "position": { "x": 550, "y": 500 },
+      "prompt": "Ground-truth based evaluation.",
+      "inputs": ["Sensor Data", "Score"],
+      "outputs": ["Final Evaluation"],
+      "custom": {
+        "source": "external_sensor_api"
+      }
+    }
+  ],
+  "connections": [
+    { "from": "1", "to": "2" },
+    { "from": "2", "to": "3" }
+  ]
+}

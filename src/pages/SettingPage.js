@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import TogglePopupContainer from "../container/TogglePopupContainer";
 import { useConfigStore } from "../store/config_store";
 import { handlePdfUploadWithValidation } from "../util/pdf/pdfHandler";
-
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { user_options, update_user_option, load_user_options_from_file } =
@@ -133,6 +133,9 @@ const SettingsPage = () => {
             <option value="일반">일반</option>
             <option value="대규모">대규모</option>
           </select>
+        </div>
+        <div>
+          <TogglePopupContainer />
         </div>
 
         <div style={section}>
