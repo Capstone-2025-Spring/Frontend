@@ -1,10 +1,7 @@
 // src/store/audio_store.js
 import { create } from "zustand";
 import { upload_audio } from "../api/audio/upload_audio";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-
-const ffmpeg = new FFmpeg();
-await ffmpeg.load();
+import { ConvertWavToMp3 } from "../util/ffmpeg/convert_wav_to_mp3"; // 변환 함수 임포트
 
 export const useAudioStore = create((set, get) => ({
   mediaRecorder: null, // 오디오 녹음 인스턴스(MediaRecorder)를 저장하는 상태
@@ -34,7 +31,7 @@ export const useAudioStore = create((set, get) => ({
         // Blob 생성 이후 ↓ 추가
 
         // 🧠 FFmpeg를 이용해 mp3로 변환
-        const mp3Blob = await convertWebmToMp3(webmBlob);
+        const mp3Blob = await ConvertWavToMp3(webmBlob);
 
         if (!mp3Blob) {
           console.error("❌ MP3 변환 실패");
@@ -78,43 +75,3 @@ export const useAudioStore = create((set, get) => ({
     }
   },
 }));
-
-// 🔁 WebM -> MP3 변환 함수
-const fetchFile = async (blob) => {
-  const buffer = await blob.arrayBuffer();
-  return new Uint8Array(buffer);
-};
-
-export const convertWebmToMp3 = async (webmBlob) => {
-  try {
-    if (!ffmpeg.loaded) {
-      console.log("📦 FFmpeg 로딩 중...");
-      await ffmpeg.load();
-    }
-
-    // 1. 파일 시스템에 WebM 파일 쓰기
-    await ffmpeg.writeFile("input.webm", await fetchFile(webmBlob));
-
-    // 2. 변환 실행
-    await ffmpeg.exec([
-      "-i",
-      "input.webm",
-      "-codec:a",
-      "libmp3lame",
-      "-qscale:a",
-      "2",
-      "output.mp3",
-    ]);
-
-    // 3. 변환된 MP3 파일 읽기
-    const data = await ffmpeg.readFile("output.mp3");
-
-    // 4. Blob으로 변환
-    const mp3Blob = new Blob([data.buffer], { type: "audio/mp3" });
-
-    return mp3Blob;
-  } catch (error) {
-    console.error("❌ FFmpeg 변환 오류:", error);
-    return null;
-  }
-};
