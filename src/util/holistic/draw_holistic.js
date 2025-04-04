@@ -48,12 +48,12 @@ export const drawHolisticResults = (results, canvasCtx, canvas) => {
     });
   }
 
-  if (results.faceLandmarks) {
-    drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {
-      color: "#C0C0C070",
-      lineWidth: 1,
-    });
-  }
+  // if (results.faceLandmarks) {
+  //   drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {
+  //     color: "#C0C0C070",
+  //     lineWidth: 1,
+  //   });
+  // }
 
   canvasCtx.restore();
 };
