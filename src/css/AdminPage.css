@@ -1,0 +1,195 @@
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.Title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.next-button {
+  background-color: #4a90e2;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.left-panel {
+  flex: 3;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+}
+
+.right-panel {
+  flex: 2;
+  padding: 20px;
+}
+
+/* 공통 버튼 스타일 */
+.feature-tabs button,
+.option-button {
+  margin-right: 10px;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.feature-tabs button:hover,
+.option-button:hover {
+  background-color: #f0f0f0;
+  border-color: #888;
+}
+
+.feature-tabs .active,
+.option-button.active {
+  background-color: #d0d0d0;
+  border-color: #555;
+  font-weight: bold;
+}
+
+.feature-content {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+.prompt-criteria {
+  margin-top: 20px;
+}
+
+.prompt-section,
+.criteria-section,
+.output-section {
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* Run 버튼 */
+.run-button {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Prompt 저장 버튼 */
+.prompt-save {
+  margin-left: 10px;
+  background-color: #28a745;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+}
+
+.prompt-save:hover {
+  background-color: #218838;
+}
+
+/* Output 영역 */
+.output-box {
+  width: 100%;
+  height: 100px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+/* Criteria 목록 */
+.criteria-list {
+  margin-bottom: 10px;
+}
+
+.criteria-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #ffffff;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.criteria-item button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+}
+
+.criteria-item button:hover {
+  background-color: #d9363e;
+}
+
+/* Criteria 입력칸 */
+.criteria-section input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Criteria 추가/저장 버튼 */
+.criteria-buttons button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.criteria-buttons button:last-child {
+  background-color: #2196f3;
+}
