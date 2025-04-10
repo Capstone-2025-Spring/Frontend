@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { useWebcam2Store } from "../store/webcam2_store";
 import Webcam2 from "../component/Webcam2";
-import { initWebcam } from "../util/webcam/init_webcam";
+import { useWebcam2Store } from "../store/webcam2_store";
 import { setupHolistic } from "../util/holistic/setup_holistic";
+import { initWebcam } from "../util/webcam/init_webcam";
 
 const Webcam2Container = () => {
   const videoRef = useRef(null);
@@ -51,14 +51,14 @@ const Webcam2Container = () => {
         (results) => {
           const now = Date.now();
           const recording = useWebcam2Store.getState().isRecording;
-          // 🔥 녹화 중이고, 1초(1000ms)마다만 데이터를 저장하는 로직 추가
-          if (recording && now - last_saved_time.current >= 1000) {
-            last_saved_time.current = now; // 마지막 저장 시간 갱신
+
+          if (recording) {
             updateHolisticData({
               timestamp: now,
-              results, // Holistic 결과 데이터 저장
+              results: results.poseLandmarks, // Holistic 결과 전체 저장
             });
-            console.log("✅ Holistic data saved at:", new Date(now));
+            console.log("✅ Holistic frame saved at:", new Date(now));
+            console.log("FPS 측정:", 1000 / (now - last_saved_time.current));
           }
         }
       );
