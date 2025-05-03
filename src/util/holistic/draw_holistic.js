@@ -1,11 +1,7 @@
 // util/holistic/drawHolistic.js
 
-import {
-  POSE_CONNECTIONS,
-  HAND_CONNECTIONS,
-  FACEMESH_TESSELATION,
-} from "@mediapipe/holistic";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
+import { POSE_CONNECTIONS } from "@mediapipe/holistic";
 
 /**
  * MediaPipe Holistic 결과를 캔버스에 그려주는 함수
@@ -29,7 +25,7 @@ export const drawHolisticResults = (results, canvasCtx, canvas) => {
       fillColor: "rgb(255,138,0)",
     });
   }
-
+  /*
   if (results.leftHandLandmarks) {
     drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS, {
       color: "white",
@@ -47,7 +43,7 @@ export const drawHolisticResults = (results, canvasCtx, canvas) => {
       color: "rgb(0,217,231)",
     });
   }
-
+*/
   // if (results.faceLandmarks) {
   //   drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {
   //     color: "#C0C0C070",
