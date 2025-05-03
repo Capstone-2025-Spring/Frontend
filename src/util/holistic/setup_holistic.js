@@ -1,6 +1,6 @@
 // util/holistic/setup_holistic.js
-import { drawHolisticResults } from "./draw_holistic";
 import { initializeHolistic } from "./init_holistic";
+import { drawHolisticResults } from "./draw_holistic";
 
 /**
  * Holistic 모델을 초기화하고, 실시간으로 웹캠 비디오 프레임에서 결과(랜드마크)를 처리하는 함수
@@ -31,7 +31,6 @@ export const setupHolistic = async (
     smoothSegmentation: true, // 분할(segmentation)을 부드럽게 처리 여부
     minDetectionConfidence: 0.5, // 최소 탐지 신뢰도
     minTrackingConfidence: 0.5, // 최소 추적 신뢰도
-    poseLandmarksOnly: true,
   });
 
   // Holistic 모델이 프레임 처리를 끝낼 때마다 실행되는 이벤트 핸들러
