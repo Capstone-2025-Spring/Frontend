@@ -6,7 +6,7 @@ const STORE_NAME = "AppStore";
 const useAppStore = create(
   devtools(
     (set) => ({
-      // === Evaluator 관련 상태 ===
+      // === Evaluator Prompt 관련 상태 ===
       active_evaluator: "COT",
       prompt: "",
       criteria: [],
@@ -21,10 +21,8 @@ const useAppStore = create(
           `${STORE_NAME}/setActiveEvaluator`
         ),
 
-      setPrompt: (prompt) => set({ prompt }, false, `${STORE_NAME}/setPrompt`),
 
-      setCriteria: (criteria) =>
-        set({ criteria }, false, `${STORE_NAME}/setCriteria`),
+      setPrompt: (prompt) => set({ prompt }, false, `${STORE_NAME}/setPrompt`),
 
       setOutput: (output) => set({ output }, false, `${STORE_NAME}/setOutput`),
 
@@ -46,6 +44,10 @@ const useAppStore = create(
           false,
           `${STORE_NAME}/resetEvaluator`
         ),
+      // === Evaluator Prompt 관련 함수수 ===
+      
+      setCriteria: (criteria) =>
+        set({ criteria }, false, `${STORE_NAME}/setCriteria`),
 
       // === Target 데이터 관련 상태 ===
       active_target: "SST",

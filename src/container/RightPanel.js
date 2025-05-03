@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
+  createCriterion,
+  deleteCriterion,
+  fetchCriteriaByType,
   fetchEvaluatorData,
   runEvaluation,
   updateEvaluator,
@@ -23,14 +26,18 @@ const RightPanel = () => {
   } = useAppStore();
 
   const [newCriterion, setNewCriterion] = useState("");
+  const [curid, setCurid] = useState(1); // 현재 evaluator ID
 
+  // evaluator 데이터 불러오기
   useEffect(() => {
     const loadData = async () => {
       try {
         setEvalLoading(true);
         const data = await fetchEvaluatorData(active_evaluator);
-        setPrompt(data.prompt || "");
-        setCriteria(data.criteria || []);
+        setPrompt(data.content || "");
+        setCurid(data.id);
+        const c_data = await fetchCriteriaByType(active_evaluator);
+        setCriteria(c_data);
         setEvalError(null);
       } catch (err) {
         setEvalError("불러오기 실패");
@@ -41,6 +48,7 @@ const RightPanel = () => {
     loadData();
   }, [active_evaluator]);
 
+  // 평가 실행
   const handleRunClick = async () => {
     const result = await runEvaluation(active_evaluator, {
       prompt,
@@ -49,22 +57,58 @@ const RightPanel = () => {
     setOutput(result.output);
   };
 
-  const handleAddCriterion = () => {
-    if (newCriterion.trim()) {
-      setCriteria([...criteria, newCriterion.trim()]);
+  // 평가 기준 추가
+
+  const handleAddCriterion = async () => {
+    const trimmed = newCriterion.trim();
+    if (!trimmed) return;
+
+    try {
+      const newItem = await createCriterion({
+        type: active_evaluator,
+        content: trimmed,
+      });
+
+      setCriteria([...criteria, newItem]); // 서버 응답 기준으로 추가
       setNewCriterion("");
+    } catch (err) {
+      console.error("기준 추가 실패:", err);
+      alert("기준 추가 실패: " + err.message);
     }
   };
 
-  const handleDeleteCriterion = (index) => {
-    const updated = [...criteria];
-    updated.splice(index, 1);
-    setCriteria(updated);
+  // 평가 기준 삭제
+  const handleDeleteCriterion = async (index) => {
+    const target = criteria[index];
+    if (!target?.id) return;
+
+    try {
+      await deleteCriterion(target.id); // 서버에 삭제 요청
+      const updated = [...criteria];
+      updated.splice(index, 1);
+      setCriteria(updated); // 클라이언트 상태 업데이트
+    } catch (err) {
+      alert("삭제 실패: " + err.message);
+    }
+  };
+  // prompt 저장 (PUT 요청)
+  const handleSavePrompt = async () => {
+    try {
+      await updateEvaluator(curid, {
+        id: curid,
+        type: active_evaluator,
+        content: prompt,
+      });
+      alert("저장 완료!");
+    } catch (err) {
+      alert("저장 실패: " + err.message);
+    }
   };
 
+  // 평가 기준은 현재 별도 저장되지 않음
   const handleSave = async () => {
-    await updateEvaluator(active_evaluator, { prompt, criteria });
     alert("저장 완료!");
+    // TODO: criteria를 서버에 PATCH하거나 별도 저장하려면 API 필요
   };
 
   return (
@@ -73,7 +117,7 @@ const RightPanel = () => {
       {eval_error && <div style={{ color: "red" }}>{eval_error}</div>}
 
       <div className="options-bar">
-        {["COT", "GEVAL", "FactCheck", "SAGVEL"].map((opt) => (
+        {["COT", "GEVAL", "FactCheck", "SAGEval"].map((opt) => (
           <button
             key={opt}
             className={
@@ -89,6 +133,7 @@ const RightPanel = () => {
       </div>
 
       <div className="prompt-criteria">
+        {/* Prompt Section */}
         <div className="prompt-section">
           <h4>Prompt</h4>
           <textarea
@@ -99,17 +144,18 @@ const RightPanel = () => {
           <button className="run-button" onClick={handleRunClick}>
             Run
           </button>
-          <button className="prompt-save" onClick={handleSave}>
+          <button className="prompt-save" onClick={handleSavePrompt}>
             저장
           </button>
         </div>
 
+        {/* Criteria Section */}
         <div className="criteria-section">
           <h4>Criteria</h4>
           <div className="criteria-list">
             {(criteria || []).map((item, index) => (
               <div key={index} className="criteria-item">
-                {item}
+                {item.content}
                 <button onClick={() => handleDeleteCriterion(index)}>
                   삭제
                 </button>
@@ -128,6 +174,7 @@ const RightPanel = () => {
           </div>
         </div>
 
+        {/* Output Section */}
         <div className="output-section">
           <h4>Output</h4>
           <div className="output-box">{output}</div>
