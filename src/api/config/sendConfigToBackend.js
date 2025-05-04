@@ -5,7 +5,7 @@ export const sendConfigToBackend = async () => {
   const { user_options } = useConfigStore.getState();
 
   try {
-    const res = await axios.post("/api/upload-config", user_options, {
+    const res = await axios.post("/api/upload/config", user_options, {
       headers: {
         "Content-Type": "application/json",
       },

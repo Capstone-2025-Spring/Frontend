@@ -6,7 +6,7 @@ import { ConvertWavToMp3 } from "../util/ffmpeg/convert_wav_to_mp3"; // 변환 �
 export const useAudioStore = create((set, get) => ({
   mediaRecorder: null, // 오디오 녹음 인스턴스(MediaRecorder)를 저장하는 상태
   audioChunks: [], // 녹음된 오디오 데이터를 임시 저장하는 배열
-
+  recordedAudioBlob: null,
   // 오디오 녹음 시작 함수
   startAudioRecording: async () => {
     try {
@@ -38,7 +38,8 @@ export const useAudioStore = create((set, get) => ({
           return;
         }
         const url = URL.createObjectURL(mp3Blob);
-
+        // ✅ mp3Blob 상태 저장
+        set({ recordedAudioBlob: mp3Blob });
         // 다운로드용 링크 생성
         const a = document.createElement("a");
         a.href = url;

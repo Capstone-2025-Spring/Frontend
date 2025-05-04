@@ -1,20 +1,18 @@
 import axios from "axios";
 
-// Holistic 데이터를 서버로 전송하는 함수
-export const preprocessHolisticData = async (data) => {
+// Holistic 데이터를 전처리 없이 바로 서버로 전송하는 함수
+export const upload_holistic_data = async (data) => {
   try {
-    const response = await axios.post("/api/holisticPreprocess", data, {
+    const response = await axios.post("/api/upload/holistic", data, {
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    // 서버 응답 데이터 출력
-    console.log(response.data);
-
-    return response.data; // 서버 응답 데이터 반환
+    console.log("✅ 서버 응답:", response.data);
+    return response.data;
   } catch (error) {
-    console.error("Error processing holistic data:", error);
-    throw error; // 오류 발생 시 상위에서 처리할 수 있도록 throw
+    console.error("❌ 전송 실패:", error.response?.data || error.message);
+    throw error;
   }
 };

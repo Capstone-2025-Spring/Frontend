@@ -2,6 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { sendConfigToBackend } from "../api/config/sendConfigToBackend";
+import { getLectureFeedbackWithAllData } from "../api/feedback/upload_feedback";
 import Webcam2Container from "../container/Webcam2Container";
 import { useAudioStore } from "../store/audio_store";
 import { useWebcam2Store } from "../store/webcam2_store";
@@ -16,9 +17,11 @@ const RecordingPage = () => {
     mediaRecorder,
     saveVideoFile,
     clearVideoChunks,
+    processedHolisticData,
   } = useWebcam2Store();
 
-  const { startAudioRecording, stopAudioRecording } = useAudioStore();
+  const { startAudioRecording, stopAudioRecording, recordedAudioBlob } =
+    useAudioStore();
   const navigate = useNavigate();
 
   const handleToggleRecording = async () => {
@@ -37,6 +40,8 @@ const RecordingPage = () => {
       await sendHolisticDataToServer();
       saveVideoFile();
       clearVideoChunks();
+
+      const result = await getLectureFeedbackWithAllData();
 
       navigate("/report");
     } else {

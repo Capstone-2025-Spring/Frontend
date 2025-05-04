@@ -3,17 +3,14 @@ import { create } from "zustand";
 export const useConfigStore = create((set) => ({
   // 초기 상태
   user_options: {
-    category: "",
     school_level: "",
     subject: "영어",
-    age_group: "11",
+    age: "11",
     class_size: "일반",
     student_type: "조용한 반",
     user_criteria: [],
-    difficulty: 1,
     audio_enabled: false,
     video_enabled: false,
-    pdf_file: null,
   },
 
   // 전체 옵션 한번에 설정
