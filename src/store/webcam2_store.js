@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { upload_holistic_data } from "../api/video/upload_holistic_data";
 export const useWebcam2Store = create((set, get) => ({
   isRecording: false,
   holisticLandmarker: null,
@@ -90,10 +89,10 @@ export const useWebcam2Store = create((set, get) => ({
         })),
       };
 
-      console.log("📤 전송 데이터:", cleaned);
+      //console.log("📤 전송 데이터:", cleaned);
       set({ processedHolisticData: cleaned });
-      const response = await upload_holistic_data(cleaned);
-      console.log("✅ 전송 성공:");
+      /*const response = await upload_holistic_data(cleaned);
+      console.log("✅ 전송 성공:");*/
     } catch (err) {
       console.error("❌ 전송 실패:", err.response?.data || err.message);
     }

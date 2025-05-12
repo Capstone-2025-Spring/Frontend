@@ -32,8 +32,6 @@ export const getLectureFeedbackWithAllData = async () => {
   // 🔁 recordedAudioBlob이 준비될 때까지 기다림
   const recordedAudioBlob = await waitForRecordedAudioBlob();
 
-  console.log("📤 Sending holistic data:", processedHolisticData);
-
   try {
     // 💾 각각 Blob으로 변환
     const holisticFile = new Blob([JSON.stringify(processedHolisticData)], {

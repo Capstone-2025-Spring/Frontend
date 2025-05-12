@@ -1,0 +1,34 @@
+/* LoadingPage.css */
+.upload-page {
+  min-height: 100vh;
+  background: linear-gradient(to top right, #e0e7ff, #fff, #ffd6e0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.upload-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  width: 100%;
+  max-width: 480px;
+  backdrop-filter: blur(10px);
+}
+
+.upload-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.upload-status {
+  text-align: center;
+  color: #666;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}

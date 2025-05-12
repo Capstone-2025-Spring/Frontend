@@ -1,0 +1,89 @@
+.upload-page {
+  min-height: 100vh;
+  background: linear-gradient(to top right, #e0e7ff, #fff, #ffd6e0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.upload-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  backdrop-filter: blur(10px);
+}
+
+.upload-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.upload-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.upload-input {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.upload-button {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upload-button:hover {
+  background: linear-gradient(to right, #5a67d8, #6b46c1);
+}
+
+.upload-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.upload-status {
+  text-align: center;
+  color: #666;
+  margin-top: 1rem;
+}
+
+.upload-result {
+  margin-top: 2rem;
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid #ddd;
+}
+
+.upload-result h2 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.upload-result ul {
+  padding-left: 1rem;
+  list-style-type: disc;
+  color: #444;
+}

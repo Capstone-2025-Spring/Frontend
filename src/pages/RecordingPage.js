@@ -31,7 +31,7 @@ const RecordingPage = () => {
 
       //설정 저장 및 서버 전송
       exportConfigToJson();
-      await sendConfigToBackend();
+      //await sendConfigToBackend();
 
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();

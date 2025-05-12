@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ 추가
+import { useNavigate } from "react-router-dom";
 
 const CheckMediaPage = () => {
   const videoRef = useRef(null);
   const [micVolume, setMicVolume] = useState(0);
   const [error, setError] = useState("");
-
-  //1회성이라 store로 상태 관리 안함
-
-  const navigate = useNavigate(); // ✅ 라우터 이동 함수
+  const navigate = useNavigate();
 
   useEffect(() => {
     navigator.mediaDevices
@@ -41,74 +38,118 @@ const CheckMediaPage = () => {
       });
   }, []);
 
-  // ✅ 스타일
-  const containerStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "2rem",
-    fontFamily: "sans-serif",
-    backgroundColor: "#f3f4f6",
-    minHeight: "100vh",
-  };
-
-  const videoStyle = {
-    width: "480px",
-    height: "360px",
-    backgroundColor: "#000",
-    borderRadius: "8px",
-    marginBottom: "1rem",
-  };
-
-  const micBarStyle = {
-    width: `${micVolume * 2}px`,
-    height: "20px",
-    backgroundColor: "#10b981",
-    borderRadius: "4px",
-    transition: "width 0.2s ease",
-  };
-
-  const buttonStyle = {
-    marginTop: "2rem",
-    padding: "1rem 2rem",
-    fontSize: "1rem",
-    borderRadius: "8px",
-    border: "none",
-    backgroundColor: "#3b82f6",
-    color: "#fff",
-    cursor: "pointer",
-  };
-
   return (
-    <div style={containerStyle}>
-      <h2>🎛️ 장치 테스트</h2>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>🎛️ 장치 테스트</h2>
 
-      {error ? (
-        <p style={{ color: "red" }}>{error}</p>
-      ) : (
-        <>
-          <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
-          <div>
-            <p>🎙️ 마이크 볼륨</p>
-            <div
-              style={{
-                width: "200px",
-                backgroundColor: "#e5e7eb",
-                borderRadius: "4px",
-              }}
-            >
-              <div style={micBarStyle}></div>
+        {error ? (
+          <p style={styles.error}>{error}</p>
+        ) : (
+          <>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              style={styles.video}
+            />
+
+            <div style={styles.micContainer}>
+              <p style={styles.label}>🎙️ 마이크 볼륨</p>
+              <div style={styles.micTrack}>
+                <div
+                  style={{
+                    ...styles.micBar,
+                    width: `${micVolume * 2}px`,
+                  }}
+                ></div>
+              </div>
             </div>
-          </div>
 
-          {/* ✅ 다음으로 버튼 */}
-          <button style={buttonStyle} onClick={() => navigate("/questions")}>
-            다음으로
-          </button>
-        </>
-      )}
+            <button style={styles.button} onClick={() => navigate("/questions")}>
+              다음으로
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
+};
+
+const styles = {
+  page: {
+    minHeight: "100vh",
+    background: "linear-gradient(to top right, #e0e7ff, #fff, #ffd6e0)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "2rem",
+    fontFamily: "'Segoe UI', sans-serif",
+  },
+  card: {
+    background: "rgba(255, 255, 255, 0.85)",
+    backdropFilter: "blur(12px)",
+    borderRadius: "20px",
+    padding: "2rem",
+    width: "100%",
+    maxWidth: "520px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "1.6rem",
+    fontWeight: "bold",
+    color: "#9b1c44",
+    marginBottom: "1.5rem",
+  },
+  error: {
+    color: "red",
+    fontWeight: "bold",
+  },
+  video: {
+    width: "100%",
+    maxWidth: "480px",
+    height: "auto",
+    borderRadius: "12px",
+    backgroundColor: "#000",
+    marginBottom: "1rem",
+  },
+  micContainer: {
+    marginBottom: "1.5rem",
+  },
+  label: {
+    fontSize: "1rem",
+    fontWeight: "600",
+    marginBottom: "0.3rem",
+    color: "#333",
+  },
+  micTrack: {
+    width: "200px",
+    height: "20px",
+    backgroundColor: "#e5e7eb",
+    borderRadius: "6px",
+    margin: "0 auto",
+  },
+  micBar: {
+    height: "100%",
+    backgroundColor: "#10b981",
+    borderRadius: "6px",
+    transition: "width 0.2s ease",
+  },
+  button: {
+    marginTop: "1.5rem",
+    padding: "0.9rem 1.2rem",
+    background: "linear-gradient(to right, #ec4899, #d946ef)",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: "1rem",
+    border: "none",
+    borderRadius: "12px",
+    cursor: "pointer",
+    width: "100%",
+    maxWidth: "320px",
+  },
 };
 
 export default CheckMediaPage;
