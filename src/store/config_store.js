@@ -3,18 +3,13 @@ import { create } from "zustand";
 export const useConfigStore = create((set) => ({
   // 초기 상태
   user_options: {
-    title: "",
-    category: "",
-    school_level: "",
-    subject: "영어",
-    age_group: "11",
-    class_size: "일반",
-    student_type: "조용한 반",
-    user_criteria: [],
-    difficulty: 1,
-    audio_enabled: false,
-    video_enabled: false,
-    pdf_file: "",
+    title: "나눗셈 개념 설명 강의",
+    audience_group: "초등 고학년", // ✅ 새로 추가
+    audience_type: "중간 수준", // ✅ 새로 추가
+    subject: "수학",
+    user_criteria: ["어휘의 명확성", "비언어적 전달력", "흥미 유발"],
+    audio_enabled: true,
+    video_enabled: true,
   },
 
   // 전체 옵션 한번에 설정

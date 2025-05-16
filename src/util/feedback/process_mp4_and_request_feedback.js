@@ -81,8 +81,8 @@ export async function processMp4AndRequestFeedback(mp4File) {
     });
 
     console.log("✅ [SUCCESS] GPT 응답 수신 완료");
-    console.log("🎯 [RESULT]:", response.data.result);
-    return response.data.result;
+    console.log("🎯 [RESULT]:", response.data);
+    return response.data;
   } catch (err) {
     console.error("❌ processMp4AndRequestFeedback 실패:", err);
     updateLoader({

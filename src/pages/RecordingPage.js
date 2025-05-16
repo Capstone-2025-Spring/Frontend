@@ -1,9 +1,9 @@
 // src/pages/RecordingPage.js
-import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { sendConfigToBackend } from "../api/config/sendConfigToBackend";
-import { getLectureFeedbackWithAllData } from "../api/feedback/upload_feedback";
+import MainWindowContainer from "../container/MainWindowContainer";
 import Webcam2Container from "../container/Webcam2Container";
+import "../css/RecordingPage.css";
 import { useAudioStore } from "../store/audio_store";
 import { useWebcam2Store } from "../store/webcam2_store";
 import { exportConfigToJson } from "../util/config/config_exporter";
@@ -17,21 +17,41 @@ const RecordingPage = () => {
     mediaRecorder,
     saveVideoFile,
     clearVideoChunks,
-    processedHolisticData,
   } = useWebcam2Store();
 
-  const { startAudioRecording, stopAudioRecording, recordedAudioBlob } =
-    useAudioStore();
+  const { startAudioRecording, stopAudioRecording } = useAudioStore();
   const navigate = useNavigate();
+
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
+
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      timer = setInterval(() => {
+        setSecondsElapsed((prev) => prev + 1);
+      }, 1000);
+      setIntervalId(timer);
+    } else {
+      clearInterval(intervalId);
+      setSecondsElapsed(0);
+    }
+    return () => clearInterval(timer);
+  }, [isRecording]);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${minutes}:${secs}`;
+  };
 
   const handleToggleRecording = async () => {
     if (isRecording) {
       stopRecording();
       stopAudioRecording();
-
-      //설정 저장 및 서버 전송
       exportConfigToJson();
-      //await sendConfigToBackend();
 
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
@@ -41,9 +61,7 @@ const RecordingPage = () => {
       saveVideoFile();
       clearVideoChunks();
 
-      const result = await getLectureFeedbackWithAllData();
-
-      navigate("/report");
+      navigate("/loading-live");
     } else {
       startRecording();
       startAudioRecording();
@@ -56,43 +74,30 @@ const RecordingPage = () => {
     }
   };
 
-  const containerStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "2rem",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    backgroundColor: "#f9fafb",
-    minHeight: "100vh",
-  };
-
-  const titleStyle = {
-    fontSize: "1.8rem",
-    marginBottom: "1rem",
-  };
-
-  const buttonStyle = {
-    padding: "1rem 2rem",
-    fontSize: "1.2rem",
-    borderRadius: "8px",
-    border: "none",
-    backgroundColor: isRecording ? "#ef4444" : "#10b981", // 빨간색: 정지, 초록색: 시작
-    color: "#fff",
-    cursor: "pointer",
-    marginBottom: "2rem",
-    transition: "background-color 0.3s ease",
-  };
-
   return (
-    <div style={containerStyle}>
-      <h2 style={titleStyle}>🎥 면접 녹화 중</h2>
+    <div className="recording-page">
+      <header className="recording-header">
+        <h2 className="recording-title">강의 시뮬레이션</h2>
+        <div className="recording-controls">
+          {isRecording && (
+            <div className="recording-timer">{formatTime(secondsElapsed)}</div>
+          )}
+          <button
+            onClick={handleToggleRecording}
+            className={`record-button ${isRecording ? "stop" : "start"}`}
+          >
+            {isRecording ? " 강의 종료" : "강의 시작"}
+          </button>
+        </div>
+      </header>
 
-      <button onClick={handleToggleRecording} style={buttonStyle}>
-        {isRecording ? "⏹️ 녹화 종료" : "▶️ 녹화 시작"}
-      </button>
+      <main className="recording-main">
+        <MainWindowContainer />
+      </main>
 
-      {/* 웹캠 및 분석 화면 */}
-      <Webcam2Container />
+      <div className="recording-webcam">
+        <Webcam2Container />
+      </div>
     </div>
   );
 };

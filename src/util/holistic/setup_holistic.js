@@ -1,6 +1,5 @@
 // util/holistic/setup_holistic.js
 import { initializeHolistic } from "./init_holistic";
-import { drawHolisticResults } from "./draw_holistic";
 
 /**
  * Holistic 모델을 초기화하고, 실시간으로 웹캠 비디오 프레임에서 결과(랜드마크)를 처리하는 함수
@@ -36,7 +35,7 @@ export const setupHolistic = async (
   // Holistic 모델이 프레임 처리를 끝낼 때마다 실행되는 이벤트 핸들러
   landmarker.onResults((results) => {
     // 결과를 캔버스에 그림 (랜드마크 시각화)
-    drawHolisticResults(results, canvasCtx, canvasElement);
+    //drawHolisticResults(results, canvasCtx, canvasElement);
 
     // 외부 콜백 함수가 있으면, 결과 데이터를 추가적으로 처리
     if (onResultsCallback) {

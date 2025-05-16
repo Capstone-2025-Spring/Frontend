@@ -1,0 +1,77 @@
+/* src/css/RecordingPage.css */
+.recording-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f3f4f6;
+  padding: 2rem;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.recording-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+}
+
+.recording-title {
+  font-size: 2rem;
+  color: #1f2937;
+}
+
+.record-button {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.record-button.start {
+  background-color: #10b981;
+}
+
+.record-button.stop {
+  background-color: #ef4444;
+}
+
+.recording-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 180px);
+}
+
+.recording-webcam {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 220px;
+  height: 165px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.recording-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.recording-timer {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #374151;
+  background-color: #e0f2fe;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+}

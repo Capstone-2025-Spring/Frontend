@@ -1,9 +1,9 @@
-import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import AdminPage from "./pages/AdminPage";
 import CheckMediaPage from "./pages/CheckMediaPage";
 import LoadingPage from "./pages/LoadingPage";
+import LoadingPageForLive from "./pages/LoadingPageForLive";
 import MainPage from "./pages/MainPage";
 import QuestionPage from "./pages/QuestionPage";
 import RecordingPage from "./pages/RecordingPage";
@@ -23,6 +23,7 @@ const App = () => {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/upload" element={<UploadVideoPage />} />
         <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/loading-live" element={<LoadingPageForLive />} />
       </Routes>
     </Router>
   );

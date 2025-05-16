@@ -53,8 +53,8 @@ export const getLectureFeedbackWithAllData = async () => {
       },
     });
 
-    console.log("🎯 GPT 평가 결과:", response.data.result);
-    return response.data.result;
+    //console.log("🎯 GPT 평가 결과:", response.data);
+    return response.data;
   } catch (err) {
     console.error("❌ 평가 요청 실패:", err.response?.data || err.message);
     throw err;
