@@ -9,6 +9,7 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
   const [lastSuggested, setLastSuggested] = useState([]);
 
   const chatEndRef = useRef(null);
+
   useEffect(() => {
     // 초기 인삿말
     setChatLog([
@@ -23,17 +24,24 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatLog]); // ✅ chatLog가 변경될 때마다 아래로 스크롤
-  const containsPositiveFeedback = (msg) => {
-    const positives = [
-      "좋아",
-      "괜찮",
-      "ㅇㅇ",
-      "좋습니다",
-      "그렇죠",
-      "오",
-      "맘에",
-    ];
-    return positives.some((w) => msg.includes(w));
+
+  const parseGptReply = (rawReply) => {
+    const suggested = [];
+
+    // ^^^^단어^^^^ 를 찾아서 배열에 저장하고, ^^^^ 제거
+    const cleanedReply = rawReply.replace(
+      /\^\^\^\^(.+?)\^\^\^\^/g,
+      (_, word) => {
+        const trimmed = word.trim();
+        suggested.push(trimmed);
+        return trimmed; // 표시 없이 원래 단어만 출력
+      }
+    );
+
+    return {
+      reply: cleanedReply.trim(),
+      suggested,
+    };
   };
 
   const handleSend = async () => {
@@ -43,22 +51,21 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
     setChatLog((prev) => [...prev, { role: "user", text: userMessage }]);
     setChatInput("");
 
-    // 긍정 응답이면 lastSuggested 추가
-    if (containsPositiveFeedback(userMessage)) {
-      setSelected((prev) => [
-        ...prev,
-        ...lastSuggested.filter((c) => !prev.includes(c)),
-      ]);
-    }
-
     // GPT 응답 받기
-    const { reply, suggested } = await requestCriteriaRecommendation(
+    const { reply: rawReply } = await requestCriteriaRecommendation(
       userMessage
     );
-    setLastSuggested(suggested);
-    setChatLog((prev) => [...prev, { role: "gpt", text: reply }]);
+    const { reply, suggested } = parseGptReply(rawReply);
 
-    // 자동 추가는 하지 않고, 사용자가 반응하면 그때 추가됨
+    // GPT 응답 저장
+    setChatLog((prev) => [...prev, { role: "gpt", text: reply }]);
+    setLastSuggested(suggested);
+
+    // ✅ 여기서 selected 업데이트
+    setSelected((prev) => [
+      ...prev,
+      ...suggested.filter((c) => !prev.includes(c)),
+    ]);
   };
 
   const handleConfirm = () => {
@@ -91,11 +98,18 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
         />
         <button onClick={handleSend}>전송</button>
       </div>
-
       <div className="chat-recommend-result">
-        <h4>선택된 추천 기준:</h4>
+        <h5>선택된 추천 기준:</h5>
         {selected.map((item, i) => (
-          <span key={i} className="pill">
+          <span
+            key={i}
+            className="pill"
+            onClick={() =>
+              setSelected((prev) => prev.filter((_, index) => index !== i))
+            }
+            style={{ cursor: "pointer" }}
+            title="클릭하여 삭제"
+          >
             {item}
           </span>
         ))}

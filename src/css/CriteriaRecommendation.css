@@ -55,18 +55,26 @@
   cursor: pointer;
 }
 
-/* 추천 결과 */
 .chat-recommend-result {
   margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap; /* 줄바꿈 허용 */
+  gap: 8px; /* pill 간격 */
+  align-items: center;
 }
 
 .pill {
-  display: inline-block;
-  background: #ffe082;
+  background-color: #def;
   padding: 6px 12px;
-  margin: 4px;
   border-radius: 20px;
-  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.pill:hover {
+  background-color: #cce;
 }
 
 .chat-actions button {
