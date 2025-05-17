@@ -1,0 +1,135 @@
+.main {
+  overflow: hidden;
+}
+.criteria-section {
+  margin-bottom: 2rem;
+}
+
+.criteria-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.criteria-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.criteria-pill {
+  background-color: #f3f4f6;
+  color: #333;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.criteria-pill:hover {
+  background-color: #e0e7ff;
+}
+
+.criteria-pill.selected {
+  background-color: #3b82f6;
+  color: white;
+  border-color: transparent;
+}
+
+.criteria-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.criteria-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.criteria-chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.criteria-chip {
+  background-color: #f9fafb;
+  border: 1px solid #d1d5db;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.criteria-chip button {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ✅ 팝업 오버레이 (화면 전체 차지 + 스크롤 방지) */
+.criteria-popup-overlay {
+  position: fixed;
+  overflow: hidden;
+}
+
+/* ✅ 팝업 본체 (중앙 정렬, 내부 스크롤 필요 시만) */
+.criteria-popup-container {
+  position: fixed;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 80vh;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 내부 채팅창에만 스크롤 허용 */
+}
+
+/* ✅ 팝업 내부 닫기 버튼 */
+.popup-close-button {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ✅ 추천받기 버튼 - 최신 스타일 유지 */
+.recommend-button {
+  margin-left: 12px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ff6b6b, #ffcc70);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.recommend-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(255, 107, 107, 0.4);
+}

@@ -1,0 +1,101 @@
+.chat-popup-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-box {
+  flex: 1;
+  padding: 16px;
+  background: #f9f9f9;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+/* 메시지 스타일 */
+.chat-message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 70%;
+  white-space: pre-line;
+}
+
+.chat-message.user {
+  background-color: #e1f5fe;
+  align-self: flex-end;
+}
+
+.chat-message.gpt {
+  background-color: #fff3e0;
+  align-self: flex-start;
+}
+
+/* 입력창 영역 */
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.chat-input-row input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.chat-input-row button {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #ff8a65, #ffd54f);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 추천 결과 */
+.chat-recommend-result {
+  margin-top: 12px;
+}
+
+.pill {
+  display: inline-block;
+  background: #ffe082;
+  padding: 6px 12px;
+  margin: 4px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.chat-actions button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.chat-actions button:first-child {
+  background: linear-gradient(135deg, #34d399, #10b981); /* 초록 그라데이션 */
+  color: white;
+  margin-right: 10px;
+}
+
+.chat-actions button:first-child:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.chat-actions button:last-child {
+  background-color: #f3f4f6; /* 연회색 */
+  color: #374151;
+}
+
+.chat-actions button:last-child:hover {
+  background-color: #e5e7eb;
+  transform: scale(1.02);
+}

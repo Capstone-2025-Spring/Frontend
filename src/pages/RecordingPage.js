@@ -1,14 +1,20 @@
 // src/pages/RecordingPage.js
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import EventPopupContainer from "../container/EventPopupContainer";
 import MainWindowContainer from "../container/MainWindowContainer";
 import Webcam2Container from "../container/Webcam2Container";
 import "../css/RecordingPage.css";
 import { useAudioStore } from "../store/audio_store";
+import { useEventStore } from "../store/event_store";
 import { useWebcam2Store } from "../store/webcam2_store";
 import { exportConfigToJson } from "../util/config/config_exporter";
-
+import {
+  startRandomEventTriggerLoop,
+  stopRandomEventTriggerLoop,
+} from "../util/event/event_scheduler";
 const RecordingPage = () => {
+  const clear_event = useEventStore((state) => state.clear_event);
   const {
     isRecording,
     startRecording,
@@ -38,7 +44,11 @@ const RecordingPage = () => {
     }
     return () => clearInterval(timer);
   }, [isRecording]);
-
+  useEffect(() => {
+    return () => {
+      clear_event();
+    };
+  }, []);
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60)
       .toString()
@@ -52,7 +62,7 @@ const RecordingPage = () => {
       stopRecording();
       stopAudioRecording();
       exportConfigToJson();
-
+      stopRandomEventTriggerLoop();
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
       }
@@ -65,7 +75,7 @@ const RecordingPage = () => {
     } else {
       startRecording();
       startAudioRecording();
-
+      startRandomEventTriggerLoop();
       const recorder = mediaRecorder;
       if (recorder && recorder.state === "inactive") {
         recorder.start();
@@ -94,7 +104,7 @@ const RecordingPage = () => {
       <main className="recording-main">
         <MainWindowContainer />
       </main>
-
+      <EventPopupContainer />
       <div className="recording-webcam">
         <Webcam2Container />
       </div>

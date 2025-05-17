@@ -56,5 +56,6 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.17"
   },
-  "proxy": "http://3.39.25.136:8080"
+  "proxy": "http://localhost:8080",
+  "_proxy": "http://3.39.25.136:8080"
 }

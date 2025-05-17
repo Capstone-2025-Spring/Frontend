@@ -1,0 +1,60 @@
+/* 전체 팝업 영역 */
+.Event {
+  position: relative; /* ✅ 자식 absolute 기준 */
+  width: 100%;
+  height: 100%;
+}
+
+/* 팝업 본체 */
+
+/* 등장 애니메이션 */
+@keyframes popupFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* 강조용 이모지나 이름 */
+.event-popup strong {
+  color: #d60000;
+}
+/* EventPopup.css */
+.event-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  transform: translate(-50%, -50%); /* ✅ 부모 기준 정중앙 */
+  width: 300px; /* ✅ 고정폭 지정 (안정성 높임) */
+  background-color: #fffbe6;
+  border: 2px solid #ff9900;
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 9999;
+
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  /* 렌더 안정화 위해 강제로 GPU 가속 */
+  will-change: opacity, transform;
+}
+
+.event-popup.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.event-timer {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: normal;
+  color: #444;
+}
