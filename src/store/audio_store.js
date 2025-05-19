@@ -1,76 +1,107 @@
-// src/store/audio_store.js
 import { create } from "zustand";
-import { ConvertWavToMp3 } from "../util/ffmpeg/convert_wav_to_mp3"; // 변환 함수 임포트
+import { ConvertWavToMp3 } from "../util/ffmpeg/convert_wav_to_mp3";
 
 export const useAudioStore = create((set, get) => ({
-  mediaRecorder: null, // 오디오 녹음 인스턴스(MediaRecorder)를 저장하는 상태
-  audioChunks: [], // 녹음된 오디오 데이터를 임시 저장하는 배열
-  recordedAudioBlob: null,
-  // 오디오 녹음 시작 함수
+  mediaRecorder: null, // 전체 녹음용
+  audioChunks: [], // 전체용 chunks
+  recordedAudioBlob: null, // 전체 녹음 MP3
+  stream: null, // 마이크 stream 저장
+
+  eventRecorder: null, // 이벤트용
+  eventChunks: [], // 이벤트 chunks
+  recordedEventAudioBlob: null, // 이벤트 녹음 MP3
+
+  // === 전체 녹음 시작 ===
   startAudioRecording: async () => {
     try {
-      // 사용자의 마이크 접근 권한 요청 및 오디오 스트림 획득
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const chunks = [];
+      const recorder = new MediaRecorder(stream);
 
-      // 오디오 스트림으로부터 MediaRecorder 인스턴스 생성
-      const mediaRecorder = new MediaRecorder(stream);
-      const chunks = []; // 녹음 중 발생한 데이터를 저장할 임시 배열
-
-      // 데이터가 녹음될 때마다 호출되는 이벤트 핸들러
-      mediaRecorder.ondataavailable = (e) => {
-        // 데이터가 존재하면 chunks 배열에 추가
-        if (e.data.size > 0) chunks.push(e.data);
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push({ data: e.data, timestamp: performance.now() });
+        }
       };
 
-      // 녹음이 종료될 때 호출되는 이벤트 핸들러
-      mediaRecorder.onstop = async () => {
-        //console.log(chunks);
-        // 임시 저장된 오디오 데이터를 합쳐 하나의 오디오 파일(.wav) 생성
-        const webmBlob = new Blob(chunks, { type: "audio/wav" });
-        // Blob 생성 이후 ↓ 추가
-
-        // 🧠 FFmpeg를 이용해 mp3로 변환
-        const mp3Blob = await ConvertWavToMp3(webmBlob);
-
-        if (!mp3Blob) {
-          console.error("❌ MP3 변환 실패");
-          return;
+      recorder.onstop = async () => {
+        const { audioChunks } = get();
+        const fullBlob = new Blob(
+          audioChunks.map((c) => c.data),
+          {
+            type: "audio/webm",
+          }
+        );
+        const mp3Blob = await ConvertWavToMp3(fullBlob);
+        if (mp3Blob) {
+          set({ recordedAudioBlob: mp3Blob });
+          console.log("✅ 전체 녹음 mp3 저장 완료");
+        } else {
+          console.error("❌ 전체 녹음 MP3 변환 실패");
         }
-        const url = URL.createObjectURL(mp3Blob);
-        // ✅ mp3Blob 상태 저장
-        set({ recordedAudioBlob: mp3Blob });
-        // 다운로드용 링크 생성
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "recorded_audio"; // 저장될 파일 이름
-        a.click();
-
-        /*
-        // ▶️ 생성된 오디오 파일(.wav)을 서버에 업로드
-        try {
-          const res = await upload_audio(mp3Blob);
-          console.log("✅ Audio uploaded:", res); // 업로드 성공 시 결과 출력
-        } catch (err) {
-          console.error("❌ Audio upload failed:", err); // 업로드 실패 시 에러 출력
-        }
-          */
       };
 
-      // 녹음 시작
-      mediaRecorder.start();
-
-      // 생성된 MediaRecorder 인스턴스와 chunks 배열을 Zustand 상태로 저장
-      set({ mediaRecorder, audioChunks: chunks });
+      recorder.start(100);
+      set({ mediaRecorder: recorder, audioChunks: chunks, stream });
+      console.log("🎙️ 전체 오디오 녹음 시작");
     } catch (err) {
-      console.error("❌ Failed to access microphone:", err); // 마이크 접근 실패 시 에러 출력
+      console.error("❌ 마이크 접근 실패:", err);
     }
   },
 
-  // 오디오 녹음 종료 함수
   stopAudioRecording: () => {
-    const { mediaRecorder } = get(); // 현재 상태에서 MediaRecorder 인스턴스를 가져옴
+    const { mediaRecorder } = get();
     if (mediaRecorder && mediaRecorder.state !== "inactive") {
-      mediaRecorder.stop(); // MediaRecorder가 활성화 상태일 때만 녹음 중지
+      mediaRecorder.stop();
+      console.log("🛑 전체 오디오 녹음 종료");
     }
   },
+
+  // === 이벤트 녹음 시작 (stream 공유) ===
+  startEventRecording: () => {
+    const { stream } = get();
+    if (!stream) {
+      console.warn("⚠️ 마이크 stream이 존재하지 않음");
+      return;
+    }
+
+    const chunks = [];
+    const eventRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+
+    eventRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+
+    eventRecorder.start(100);
+    set({ eventRecorder, eventChunks: chunks });
+    console.log("🎯 이벤트 오디오 녹음 시작");
+  },
+
+  // === 이벤트 녹음 종료 및 변환
+  stopEventRecordingAndConvert: () =>
+    new Promise((resolve) => {
+      const { eventRecorder, eventChunks } = get();
+      if (!eventRecorder) {
+        console.warn("⚠️ 이벤트 recorder가 존재하지 않습니다.");
+        resolve(null);
+        return;
+      }
+
+      eventRecorder.onstop = async () => {
+        const wavBlob = new Blob(eventChunks, { type: "audio/webm" });
+        console.log("📏 이벤트 녹음 종료. blob size:", wavBlob.size);
+
+        const mp3Blob = await ConvertWavToMp3(wavBlob);
+        if (mp3Blob) {
+          set({ recordedEventAudioBlob: mp3Blob });
+          console.log("✅ 이벤트 mp3 저장 완료");
+          resolve(mp3Blob);
+        } else {
+          console.error("❌ 이벤트 MP3 변환 실패");
+          resolve(null);
+        }
+      };
+
+      eventRecorder.stop();
+    }),
 }));

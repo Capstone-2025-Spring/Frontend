@@ -8,8 +8,11 @@ export const useWebcam2Store = create((set, get) => ({
   videoChunks: [],
   mediaRecorder: null,
 
+  processedEventHolisticData: null, // ✅ 이벤트 구간 데이터
+  eventStartTime: null, //
+
   setHolisticLandmarker: (landmarker) => {
-    console.log("🎯 setHolisticLandmarker 호출됨:", landmarker);
+    console.log("setHolisticLandmarker 호출됨:", landmarker);
     set({ holisticLandmarker: landmarker });
   },
 
@@ -44,6 +47,44 @@ export const useWebcam2Store = create((set, get) => ({
     set({ isRecording: false });
   },
 
+  // ✅ 이벤트 시작 시간 기록
+  markEventStart: () => {
+    set({ eventStartTime: performance.now() });
+    console.log("📍 holistic 이벤트 시작 시각 저장");
+  },
+
+  // ✅ 이벤트 종료 시 해당 구간만 추출
+  markEventEndAndExtract: () => {
+    const { holisticData, eventStartTime } = get();
+    const eventEndTime = performance.now();
+
+    if (!eventStartTime) {
+      console.warn("⚠️ 이벤트 시작 시각 없음");
+      return;
+    }
+
+    const extracted = holisticData.filter(
+      (frame) =>
+        frame.timestamp >= eventStartTime && frame.timestamp <= eventEndTime
+    );
+
+    const processed = {
+      eventId: `${Math.floor(eventStartTime)}_${Math.floor(eventEndTime)}`,
+      holisticData: extracted.map((frame) => ({
+        timestamp: frame.timestamp,
+        results:
+          frame.results?.poseLandmarks?.map((lm) => ({
+            x: lm.x,
+            y: lm.y,
+            z: lm.z,
+            visibility: lm.visibility,
+          })) ?? [],
+      })),
+    };
+
+    set({ processedEventHolisticData: processed });
+    console.log("✅ 이벤트 holistic 구간 추출 완료");
+  },
   updateHolisticData: (newData) => {
     const { holisticData, isRecording } = get();
     if (isRecording) {

@@ -11,7 +11,10 @@ const SettingsPanel = () => {
   useEffect(() => {
     load_user_options_from_file();
   }, []);
-
+  /*
+  useEffect(() => {
+    console.log(user_options);
+  }, [user_options]);*/
   return (
     <div className="settings-panel">
       <h3>🛠 설정 패널</h3>

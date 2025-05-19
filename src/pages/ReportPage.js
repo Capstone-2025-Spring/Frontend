@@ -1,12 +1,9 @@
 import "../css/ReportPage.css";
+import { useEventStore } from "../store/event_store";
 import { useResultStore } from "../store/result_store";
-
 const ReportPage = () => {
   const { results } = useResultStore();
-
-  if (!results || Object.keys(results).length === 0) {
-    return <div className="report-page">결과 데이터가 없습니다.</div>;
-  }
+  const { event_results } = useEventStore();
 
   const {
     overallScore,
@@ -18,6 +15,7 @@ const ReportPage = () => {
     eventReason,
   } = results;
   console.log(results);
+  //console.log(event_results);
   return (
     <div className="report-page">
       <div className="report-card">

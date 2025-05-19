@@ -37,7 +37,7 @@ export const getLectureFeedbackWithAllData = async () => {
     const holisticFile = new Blob([JSON.stringify(processedHolisticData)], {
       type: "application/json",
     });
-
+    console.log(user_options);
     const configFile = new Blob([JSON.stringify(user_options)], {
       type: "application/json",
     });

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLectureFeedbackWithAllData } from "../api/feedback/upload_feedback";
 import "../css/LoadingPage.css";
+import { useEventStore } from "../store/event_store";
 import { useLoaderStore } from "../store/loader_store";
 import { useResultStore } from "../store/result_store";
 
@@ -11,16 +12,39 @@ export default function LoadingPageForLive() {
   const { updateLoader, current_step, progress_percent, estimated_time } =
     useLoaderStore();
   const { setResults } = useResultStore();
+  const isSubmittingEvent = useEventStore((s) => s.isSubmittingEvent); // ✅ 추가
 
   useEffect(() => {
     const run = async () => {
       try {
         updateLoader({
           current_step: "📤 데이터 전송 중...",
-          progress_percent: 30,
-          estimated_time: "약 10초 소요",
+          progress_percent: 20,
+          estimated_time: "약 10초 소요 . . .",
         });
 
+        /*
+        const waitUntilEventDone = async () => {
+          const check = () =>
+            new Promise((resolve) =>
+              setTimeout(() => {
+                if (!isSubmittingEvent) {
+                  resolve(true);
+                } else {
+                  check().then(resolve); // 재귀
+                }
+              }, 300)
+            );
+          await check();
+        };
+        updateLoader({
+          current_step: "이벤트 평가 처리 완료 중...",
+          progress_percent: 50,
+          estimated_time: "약 15 초 소요 . . .",
+        });
+       
+        await waitUntilEventDone(); // ⏳ 기다림
+ */
         const feedback = await getLectureFeedbackWithAllData();
 
         updateLoader({

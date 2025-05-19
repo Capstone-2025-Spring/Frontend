@@ -19,6 +19,7 @@ export const eventTypes = [
       "하은",
       "성민",
     ],
+
     questions: [
       "이거 다시 설명해주세요.",
       "다음 시험 범위가 뭐예요?",
@@ -37,7 +38,8 @@ export const eventTypes = [
       "선생님, 계산 실수하신 것 같아요!",
       "질문 있는데 마이크 켜도 돼요?",
     ],
-    time_limit_range: [40000, 60000], // ✅ 40~60초
+
+    time_limit_range: [10000, 11000], // ✅ 40~60초[40000, 60000],
   },
   {
     type: "bathroom",
@@ -77,7 +79,7 @@ export const eventTypes = [
       "교탁 가까이 와서 쪽지로 알림.",
       "뒤에서 친구가 '쟤 화장실이래'라고 전함.",
     ],
-    time_limit_range: [8000, 12000],
+    time_limit_range: [10000, 11000], //,[8000, 12000],
   },
   {
     type: "noise",
@@ -121,7 +123,7 @@ export const eventTypes = [
       "책상 툭툭 치며 드럼 놀이.",
       "슬리퍼 소리 내며 돌아다님.",
     ],
-    time_limit_range: [10000, 15000],
+    time_limit_range: [10000, 11000], //[10000, 15000],
   },
   {
     type: "sleep",
@@ -155,6 +157,6 @@ export const eventTypes = [
       "팔에 얼굴을 파묻고 자는 중",
       "조용히 코를 골고 있음",
     ],
-    time_limit_range: [5000, 10000], // ✅ 20~30초
+    time_limit_range: [10000, 11000], // [5000, 10000], // ✅ 20~30초
   },
 ];
