@@ -57,7 +57,7 @@ const UserCriteriaSelector = () => {
   return (
     <>
       <div className="criteria-section">
-        <label className="criteria-title"> 사용자 평가 기준 선택</label>
+        <label className="criteria-title"> 사용자 평가 기준 추가</label>
         <div className="criteria-list">
           {recommendedCriteria.map((item) => (
             <div
@@ -76,7 +76,7 @@ const UserCriteriaSelector = () => {
           <input
             type="text"
             className="criteria-input"
-            placeholder="직접 추가할 기준을 입력하세요"
+            placeholder="직접 추가할 평가 기준을 입력하세요"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => {

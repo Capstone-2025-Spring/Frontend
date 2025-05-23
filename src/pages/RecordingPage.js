@@ -77,7 +77,7 @@ const RecordingPage = () => {
       const recorder = mediaRecorder;
       if (recorder && recorder.state === "inactive") {
         recorder.start();
-        console.log("🎥 MediaRecorder started");
+        console.log("MediaRecorder started");
       }
     }
   };

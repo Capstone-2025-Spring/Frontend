@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const QuestionPage = () => {
@@ -13,7 +13,7 @@ const QuestionPage = () => {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.title}>📌 서비스 이용 시 주의사항</h2>
+        <h2 style={styles.title}>서비스 이용 시 주의사항</h2>
         <div style={styles.notice}>
           <p>1. 본 서비스는 면접 녹화 및 음성 분석 기능을 포함하고 있습니다.</p>
           <p>

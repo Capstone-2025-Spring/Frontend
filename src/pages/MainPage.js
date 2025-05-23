@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
@@ -13,24 +12,24 @@ const MainPage = () => {
         </h1>
 
         <div style={styles.section}>
-          <div style={styles.label}>🎤 실시간 수업, 평가 하러가기</div>
+          <div style={styles.label}>실시간 수업, 평가 하러가기</div>
           <button style={styles.button} onClick={() => navigate("/checkMedia")}>
             수업 하러가기
           </button>
         </div>
 
         <div style={styles.section}>
-          <div style={styles.label}>📹 강의 영상을 업로드하여 평가받기</div>
+          <div style={styles.label}>강의 영상을 업로드하여 평가받기</div>
           <button style={styles.button} onClick={() => navigate("/upload")}>
             영상 업로드하러 가기
           </button>
         </div>
 
         <div style={styles.section}>
-          <div style={styles.label}>🚪 로그인 / 회원가입 (미구현)</div>
+          <div style={styles.label}>로그인 / 회원가입</div>
           <button
             style={styles.secondaryButton}
-            onClick={() => navigate("/question")}
+            onClick={() => navigate("/register")}
           >
             Login / SignUp
           </button>

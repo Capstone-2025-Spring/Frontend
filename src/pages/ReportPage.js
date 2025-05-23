@@ -24,7 +24,7 @@ const ReportPage = () => {
         <section className="report-section">
           <h3 className="report-subtitle">1. 총평</h3>
           <p>
-            📌 <strong>총점: {overallScore} / 10</strong>
+            <strong>총점: {overallScore} / 10</strong>
           </p>
           <p style={{ marginTop: "0.5rem", color: "#444" }}>{overallReason}</p>
         </section>
@@ -54,12 +54,12 @@ const ReportPage = () => {
         <section className="report-section">
           <h3 className="report-subtitle">3. 어휘 수준 분석</h3>
           <p>
-            🧠 사용 어휘 수준: <strong>{vocabDifficulty}</strong>
+            사용 어휘 수준: <strong>{vocabDifficulty}</strong>
           </p>
           {blockedWords.length > 0 && (
             <>
               <p style={{ marginTop: "0.5rem" }}>
-                ⚠️ 부적절하거나 주제에서 벗어난 단어:
+                부적절하거나 주제에서 벗어난 단어:
               </p>
               <ul>
                 {blockedWords.map((word, idx) => (

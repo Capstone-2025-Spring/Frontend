@@ -48,7 +48,7 @@ export default function LoadingPageForLive() {
         const feedback = await getLectureFeedbackWithAllData();
 
         updateLoader({
-          current_step: "✅ 분석 완료",
+          current_step: "분석 완료 !",
           progress_percent: 100,
           estimated_time: "잠시 후 결과로 이동합니다",
         });
@@ -74,7 +74,7 @@ export default function LoadingPageForLive() {
   return (
     <div className="upload-page">
       <div className="upload-card">
-        <h2 className="upload-title">📊 강의 분석 중...</h2>
+        <h2 className="upload-title">강의 분석 중...</h2>
         <p className="upload-status">{current_step}</p>
 
         <div

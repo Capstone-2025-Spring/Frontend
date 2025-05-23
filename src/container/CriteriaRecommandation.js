@@ -75,7 +75,7 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
 
   return (
     <div className="chat-popup-wrapper">
-      <h2>GPT 추천 기준</h2>
+      <h2>AI 평가 기준 추천 챗봇</h2>
 
       <div className="chat-box">
         {chatLog.map((msg, i) => (
@@ -99,7 +99,7 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
         <button onClick={handleSend}>전송</button>
       </div>
       <div className="chat-recommend-result">
-        <h5>선택된 추천 기준:</h5>
+        <h5>선택된 추천 평가 기준: (클릭하여 삭제)</h5>
         {selected.map((item, i) => (
           <span
             key={i}
@@ -116,7 +116,7 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
       </div>
 
       <div className="chat-actions">
-        <button onClick={handleConfirm}>이 기준들 추가</button>
+        <button onClick={handleConfirm}>이 기준들 추가하기</button>
         <button onClick={onClose}>닫기</button>
       </div>
     </div>

@@ -41,8 +41,8 @@ const EventPopupContainer = () => {
   return (
     <div className="Event">
       <div className="event-popup show">
-        🚨 <strong>{student}</strong> → {detail}
-        <div className="event-timer">⏳ 남은 시간: {timeLeft}초</div>
+        <strong>{student}</strong> → {detail}
+        <div className="event-timer"> 남은 시간: {timeLeft}초</div>
       </div>
     </div>
   );
