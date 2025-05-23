@@ -1,6 +1,5 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { initializeHolistic } from "../holistic/init_holistic";
-import { preprocessHolisticJson } from "../holistic/preprocess_holistic";
 
 const ffmpeg = new FFmpeg({
   log: true,
@@ -62,6 +61,11 @@ export async function extractHolisticFromMp4(mp4File, onProgress) {
       const holistic = await initializeHolistic();
       const resultsArray = [];
 
+      // === 설정 ===
+      const FPS = 30;
+      const FRAME_SKIP = 3; // 3프레임마다 하나 추출
+      const interval = FRAME_SKIP / FPS; // == 0.1초 간격
+
       holistic.setOptions({
         modelComplexity: 1,
         smoothLandmarks: true,
@@ -72,24 +76,30 @@ export async function extractHolisticFromMp4(mp4File, onProgress) {
       });
 
       holistic.onResults((results) => {
-        const timestamp = video.currentTime;
-        resultsArray.push({ timestamp, results });
+        const timestamp = Date.now(); // 실제 시간 기준
+        const poseOnly =
+          results.poseLandmarks?.map((lm) => ({
+            x: lm.x,
+            y: lm.y,
+            z: lm.z,
+            visibility: lm.visibility,
+          })) ?? [];
+
+        resultsArray.push({ timestamp, results: poseOnly });
       });
 
       video.onloadedmetadata = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
-        const interval = 1 / 10;
         const duration = video.duration;
-        const totalFrames = Math.floor(duration * 10);
-
-        let currentTime = 0;
+        const totalFrames = Math.floor(duration / interval);
         let currentFrame = 0;
 
         const captureNext = async () => {
+          const currentTime = currentFrame * interval;
           if (currentTime >= duration) {
-            resolve(preprocessHolisticJson({ holisticData: resultsArray }));
+            resolve({ holisticData: resultsArray });
             return;
           }
 
@@ -99,8 +109,7 @@ export async function extractHolisticFromMp4(mp4File, onProgress) {
           video.onseeked = async () => {
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             await holistic.send({ image: canvas });
-            currentTime += interval;
-            currentFrame += 1;
+            currentFrame += FRAME_SKIP;
             captureNext();
           };
         };

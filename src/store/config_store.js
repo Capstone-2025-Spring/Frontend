@@ -3,11 +3,11 @@ import { create } from "zustand";
 export const useConfigStore = create((set) => ({
   // 초기 상태
   user_options: {
-    title: "나눗셈 개념 설명 강의",
-    audience_group: "초등 고학년", // ✅ 새로 추가
-    audience_type: "중간 수준", // ✅ 새로 추가
-    subject: "수학",
-    user_criteria: ["어휘의 명확성", "비언어적 전달력", "흥미 유발"],
+    title: "",
+    audience_group: "",
+    audience_type: "",
+    subject: "",
+    user_criteria: [],
     audio_enabled: true,
     video_enabled: true,
   },

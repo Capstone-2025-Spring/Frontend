@@ -40,7 +40,7 @@ export async function processMp4AndRequestFeedback(mp4File) {
         estimated_time: `프레임 ${cur}/${total}`,
       });
     });
-    console.log("✅ [POSE] Holistic JSON 추출 완료");
+    console.log("✅ [POSE] Holistic JSON 추출 완료", holisticJson);
 
     // Step 3: config 가져오기
     updateLoader({

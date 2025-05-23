@@ -1,4 +1,5 @@
 import { create } from "zustand";
+
 export const useWebcam2Store = create((set, get) => ({
   isRecording: false,
   holisticLandmarker: null,
@@ -8,8 +9,7 @@ export const useWebcam2Store = create((set, get) => ({
   videoChunks: [],
   mediaRecorder: null,
 
-  processedEventHolisticData: null, // ✅ 이벤트 구간 데이터
-  eventStartTime: null, //
+  recording_start_time: null, // ✅ 녹화 기준 시간
 
   setHolisticLandmarker: (landmarker) => {
     console.log("setHolisticLandmarker 호출됨:", landmarker);
@@ -39,7 +39,11 @@ export const useWebcam2Store = create((set, get) => ({
 
   startRecording: () => {
     console.log("▶️ 녹화 시작");
-    set({ isRecording: true, holisticData: [] });
+    set({
+      isRecording: true,
+      holisticData: [],
+      recording_start_time: performance.now(), // ✅ 기준 시간 저장
+    });
   },
 
   stopRecording: () => {
@@ -47,48 +51,11 @@ export const useWebcam2Store = create((set, get) => ({
     set({ isRecording: false });
   },
 
-  // ✅ 이벤트 시작 시간 기록
-  markEventStart: () => {
-    set({ eventStartTime: performance.now() });
-    console.log("📍 holistic 이벤트 시작 시각 저장");
-  },
-
-  // ✅ 이벤트 종료 시 해당 구간만 추출
-  markEventEndAndExtract: () => {
-    const { holisticData, eventStartTime } = get();
-    const eventEndTime = performance.now();
-
-    if (!eventStartTime) {
-      console.warn("⚠️ 이벤트 시작 시각 없음");
-      return;
-    }
-
-    const extracted = holisticData.filter(
-      (frame) =>
-        frame.timestamp >= eventStartTime && frame.timestamp <= eventEndTime
-    );
-
-    const processed = {
-      eventId: `${Math.floor(eventStartTime)}_${Math.floor(eventEndTime)}`,
-      holisticData: extracted.map((frame) => ({
-        timestamp: frame.timestamp,
-        results:
-          frame.results?.poseLandmarks?.map((lm) => ({
-            x: lm.x,
-            y: lm.y,
-            z: lm.z,
-            visibility: lm.visibility,
-          })) ?? [],
-      })),
-    };
-
-    set({ processedEventHolisticData: processed });
-    console.log("✅ 이벤트 holistic 구간 추출 완료");
-  },
   updateHolisticData: (newData) => {
-    const { holisticData, isRecording } = get();
-    if (isRecording) {
-      const updated = [...holisticData, newData];
+    const { holisticData, isRecording, recording_start_time } = get();
+    if (isRecording && recording_start_time !== null) {
+      const timestamp = performance.now() - recording_start_time;
+      const updated = [...holisticData, { ...newData, timestamp }];
       console.log("🆕 데이터 추가됨");
       set({ holisticData: updated });
     }
@@ -102,7 +69,6 @@ export const useWebcam2Store = create((set, get) => ({
     }
 
     try {
-      // 🆕 전처리 직접 수행
       const videoId = (() => {
         const now = new Date();
         const pad = (n) => n.toString().padStart(2, "0");
@@ -119,7 +85,7 @@ export const useWebcam2Store = create((set, get) => ({
       const cleaned = {
         videoId,
         holisticData: holisticData.map((frame) => ({
-          timestamp: frame.timestamp,
+          timestamp: Math.floor(frame.timestamp),
           results:
             frame.results?.poseLandmarks?.map((lm) => ({
               x: lm.x,
@@ -130,10 +96,7 @@ export const useWebcam2Store = create((set, get) => ({
         })),
       };
 
-      //console.log("📤 전송 데이터:", cleaned);
       set({ processedHolisticData: cleaned });
-      /*const response = await upload_holistic_data(cleaned);
-      console.log("✅ 전송 성공:");*/
     } catch (err) {
       console.error("❌ 전송 실패:", err.response?.data || err.message);
     }

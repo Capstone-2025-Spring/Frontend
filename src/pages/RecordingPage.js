@@ -9,10 +9,7 @@ import { useAudioStore } from "../store/audio_store";
 import { useEventStore } from "../store/event_store";
 import { useWebcam2Store } from "../store/webcam2_store";
 import { exportConfigToJson } from "../util/config/config_exporter";
-import {
-  startRandomEventTriggerLoop,
-  stopRandomEventTriggerLoop,
-} from "../util/event/event_scheduler";
+import { triggerSingleRandomEvent } from "../util/event/triggerSingleRandomEvent";
 const RecordingPage = () => {
   const clear_event = useEventStore((state) => state.clear_event);
   const {
@@ -62,7 +59,7 @@ const RecordingPage = () => {
       stopRecording();
       stopAudioRecording();
       exportConfigToJson();
-      stopRandomEventTriggerLoop();
+      //stopRandomEventTriggerLoop();
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
       }
@@ -75,7 +72,8 @@ const RecordingPage = () => {
     } else {
       startRecording();
       startAudioRecording();
-      startRandomEventTriggerLoop();
+      //startRandomEventTriggerLoop();
+      triggerSingleRandomEvent();
       const recorder = mediaRecorder;
       if (recorder && recorder.state === "inactive") {
         recorder.start();

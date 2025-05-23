@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import UserCriteriaSelector from "../component/UserCriteriaContainer"; // 상단 import
 import "../css/SettingsPanel.css";
 import { useConfigStore } from "../store/config_store";
-import { handlePdfUploadWithValidation } from "../util/pdf/pdfHandler";
 
 const SettingsPanel = () => {
   const { user_options, update_user_option, load_user_options_from_file } =
@@ -14,61 +13,9 @@ const SettingsPanel = () => {
   /*
   useEffect(() => {
     console.log(user_options);
-  }, [user_options]);*/
-  return (
-    <div className="settings-panel">
-      <h3>🛠 설정 패널</h3>
-
-      <div className="settings-section">
-        <label className="settings-label">연습 제목</label>
-        <input
-          type="text"
-          value={user_options.category}
-          onChange={(e) => update_user_option("category", e.target.value)}
-          className="settings-input"
-        />
-      </div>
-
-      <div className="settings-section">
-        <label className="settings-label">학교급</label>
-        <select
-          value={user_options.school_level}
-          onChange={(e) => update_user_option("school_level", e.target.value)}
-          className="settings-select"
-        >
-          <option value="">선택</option>
-          <option value="초등학교">초등학교</option>
-          <option value="중학교">중학교</option>
-          <option value="고등학교">고등학교</option>
-        </select>
-      </div>
-
-      <div className="settings-section">
-        <label className="settings-label">과목</label>
-        <select
-          value={user_options.subject}
-          onChange={(e) => update_user_option("subject", e.target.value)}
-          className="settings-select"
-        >
-          <option value="">선택</option>
-          <option value="수학">수학</option>
-          <option value="영어">영어</option>
-          <option value="과학">과학</option>
-          <option value="국어">국어</option>
-        </select>
-      </div>
-
-      <div className="settings-section">
-        <label className="settings-label">학생 나이</label>
-        <input
-          type="number"
-          value={user_options.age_group}
-          onChange={(e) => update_user_option("age_group", e.target.value)}
-          className="settings-input"
-        />
-      </div>
-
-      <div className="settings-section">
+  }, [user_options]);
+  
+     <div className="settings-section">
         <label className="settings-label">학급 크기</label>
         <select
           value={user_options.class_size}
@@ -83,20 +30,16 @@ const SettingsPanel = () => {
       </div>
 
       <div className="settings-section">
-        <label className="settings-label">학생 유형</label>
-        <select
-          value={user_options.student_type}
-          onChange={(e) => update_user_option("student_type", e.target.value)}
-          className="settings-select"
-        >
-          <option value="">선택</option>
-          <option value="조용한 반">조용한 반</option>
-          <option value="시끄러운 반">시끄러운 반</option>
-          <option value="질문 많은 반">질문 많은 반</option>
-        </select>
+        <label className="settings-label">학생 나이</label>
+        <input
+          type="number"
+          value={user_options.age_group}
+          onChange={(e) => update_user_option("age_group", e.target.value)}
+          className="settings-input"
+        />
       </div>
-
-      <div className="settings-section">
+  
+   <div className="settings-section">
         <label className="settings-label">PDF 수업자료 업로드</label>
         <input
           type="file"
@@ -108,6 +51,62 @@ const SettingsPanel = () => {
           <p className="settings-pdf-file">📎 {user_options.pdf_file.name}</p>
         )}
       </div>
+  */
+  return (
+    <div className="settings-panel">
+      <h3>🛠 설정 패널</h3>
+
+      <div className="settings-section">
+        <label className="settings-label">연습 제목</label>
+        <input
+          type="text"
+          value={user_options.title}
+          onChange={(e) => update_user_option("title", e.target.value)}
+          className="settings-input"
+        />
+      </div>
+
+      <div className="settings-section">
+        <label className="settings-label">강의대상</label>
+        <select
+          value={user_options.audience_group}
+          onChange={(e) => update_user_option("audience_group", e.target.value)}
+          className="settings-select"
+        >
+          <option value="">선택</option>
+          <option value="초등학교">초등학교</option>
+          <option value="중학교">중학교</option>
+          <option value="고등학교">고등학교</option>
+          <option value="고등학교">성인</option>
+          <option value="고등학교">고령자</option>
+        </select>
+      </div>
+
+      <div className="settings-section">
+        <label className="settings-label">강의 목표</label>
+        <input
+          //type="number"
+          value={user_options.subject}
+          onChange={(e) => update_user_option("subject", e.target.value)}
+          className="settings-input"
+        />
+      </div>
+
+      <div className="settings-section">
+        <label className="settings-label">학생 유형</label>
+        <select
+          value={user_options.audience_type}
+          onChange={(e) => update_user_option("audience_type", e.target.value)}
+          className="settings-select"
+        >
+          <option value="">선택</option>
+          <option value="조용함">조용함</option>
+          <option value="예의가 필요함">예의가 필요함</option>
+          <option value="질문이 많음">질문이 많음</option>
+          <option value="주의가 부산함">주의가 부산함</option>
+        </select>
+      </div>
+
       <div>
         <UserCriteriaSelector />
       </div>

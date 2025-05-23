@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { ConvertWavToMp3 } from "../util/ffmpeg/convert_wav_to_mp3";
-
+import { useWebcam2Store } from "./webcam2_store";
 export const useAudioStore = create((set, get) => ({
   mediaRecorder: null, // 전체 녹음용
   audioChunks: [], // 전체용 chunks
@@ -17,10 +17,13 @@ export const useAudioStore = create((set, get) => ({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const chunks = [];
       const recorder = new MediaRecorder(stream);
-
+      const baseTime = useWebcam2Store.getState().recording_start_time;
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
-          chunks.push({ data: e.data, timestamp: performance.now() });
+          chunks.push({
+            data: e.data,
+            timestamp: performance.now() - baseTime,
+          });
         }
       };
 
