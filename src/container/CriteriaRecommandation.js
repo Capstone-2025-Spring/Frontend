@@ -16,8 +16,8 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
       {
         role: "gpt",
         text:
-          "안녕! 나는 너의 선생님 스타일 추천 도우미야 😄\n" +
-          "너는 어떤 사람이야? MBTI처럼 자기소개해줘!",
+          "안녕! 나는 너의 강의 스타일 추천 도우미야 😄\n" +
+          "편하게 대화하듯 자기소개 해줘! 어떤 강의자가 되길 원하는지 같이 알아가보자!",
       },
     ]);
   }, []);
@@ -75,7 +75,7 @@ const CriteriaRecommendation = ({ onClose, onSelect }) => {
 
   return (
     <div className="chat-popup-wrapper">
-      <h2>AI 평가 기준 추천 챗봇</h2>
+      <h2>평가 기준 추천 챗봇</h2>
 
       <div className="chat-box">
         {chatLog.map((msg, i) => (

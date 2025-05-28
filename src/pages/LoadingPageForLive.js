@@ -18,7 +18,7 @@ export default function LoadingPageForLive() {
     const run = async () => {
       try {
         updateLoader({
-          current_step: "📤 데이터 전송 중...",
+          current_step: "데이터 전송 중...",
           progress_percent: 20,
           estimated_time: "약 10초 소요 . . .",
         });

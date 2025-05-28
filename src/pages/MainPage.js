@@ -8,7 +8,7 @@ const MainPage = () => {
       <div style={styles.card}>
         <h1 style={styles.title}>
           오늘도 한다면 한다! <br />
-          자신감 있는 강의!!🔥
+          자신감 있는 강의!!
         </h1>
 
         <div style={styles.section}>
@@ -22,16 +22,6 @@ const MainPage = () => {
           <div style={styles.label}>강의 영상을 업로드하여 평가받기</div>
           <button style={styles.button} onClick={() => navigate("/upload")}>
             영상 업로드하러 가기
-          </button>
-        </div>
-
-        <div style={styles.section}>
-          <div style={styles.label}>로그인 / 회원가입</div>
-          <button
-            style={styles.secondaryButton}
-            onClick={() => navigate("/register")}
-          >
-            Login / SignUp
           </button>
         </div>
       </div>

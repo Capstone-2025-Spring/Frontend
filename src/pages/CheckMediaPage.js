@@ -41,7 +41,7 @@ const CheckMediaPage = () => {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.title}>🎛️ 장치 테스트</h2>
+        <h2 style={styles.title}>장치 테스트</h2>
 
         {error ? (
           <p style={styles.error}>{error}</p>
@@ -56,7 +56,7 @@ const CheckMediaPage = () => {
             />
 
             <div style={styles.micContainer}>
-              <p style={styles.label}>🎙️ 마이크 볼륨</p>
+              <p style={styles.label}>마이크 볼륨</p>
               <div style={styles.micTrack}>
                 <div
                   style={{
