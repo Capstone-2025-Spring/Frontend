@@ -63,7 +63,7 @@ export async function extractHolisticFromMp4(mp4File, onProgress) {
 
       // === 설정 ===
       const FPS = 30;
-      const FRAME_SKIP = 3; // 3프레임마다 하나 추출
+      const FRAME_SKIP = 5; // 3프레임마다 하나 추출
       const interval = FRAME_SKIP / FPS; // == 0.1초 간격
 
       holistic.setOptions({

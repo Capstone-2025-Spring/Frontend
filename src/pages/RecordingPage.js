@@ -85,7 +85,7 @@ const RecordingPage = () => {
   return (
     <div className="recording-page">
       <header className="recording-header">
-        <h2 className="recording-title">강의 시뮬레이션</h2>
+        <h2 className="recording-title">실시간 강의 시뮬레이션</h2>
         <div className="recording-controls">
           {isRecording && (
             <div className="recording-timer">{formatTime(secondsElapsed)}</div>

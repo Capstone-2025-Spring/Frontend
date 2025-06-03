@@ -10,6 +10,7 @@ const EventPopupContainer = () => {
     trigger_time,
     time_limit_ms,
     clear_event,
+    event_type,
   } = useEventStore();
 
   const [timeLeft, setTimeLeft] = useState(0);
@@ -37,10 +38,21 @@ const EventPopupContainer = () => {
   }, [event_active, trigger_time, time_limit_ms]);
 
   if (!event_active) return null;
-
+  // ✅ 이미지 경로 (event_type 기준)
+  const imageUrl = `/event_images/${event_type || "default"}.png`;
   return (
     <div className="Event">
       <div className="event-popup show">
+        <img
+          src={imageUrl}
+          alt={event_type}
+          style={{
+            width: "80px",
+            height: "80px",
+            objectFit: "contain",
+            marginBottom: "0.5rem",
+          }}
+        />
         <strong>{student}</strong> → {detail}
         <div className="event-timer"> 남은 시간: {timeLeft}초</div>
       </div>

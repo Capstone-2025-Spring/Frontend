@@ -11,9 +11,16 @@ export default function MainWindowContainer() {
         textAlign: "center",
       }}
     >
-      <h3 style={{ fontSize: "1.5rem", color: "#374151" }}>메인 콘텐츠 영역</h3>
       <p style={{ color: "#6b7280" }}>
-        여기에 교안, 피드백, 슬라이드 등을 표시할 수 있습니다.
+        <img
+          src="/event_images/classroom.png"
+          alt="classroom"
+          style={{
+            marginTop: "1rem",
+            maxWidth: "100%",
+            borderRadius: "8px",
+          }}
+        />
       </p>
     </div>
   );

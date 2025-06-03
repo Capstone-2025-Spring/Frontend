@@ -1,26 +1,71 @@
+import { useEffect, useRef, useState } from "react";
 import "../css/ReportPage.css";
 import { useEventStore } from "../store/event_store";
 import { useResultStore } from "../store/result_store";
+import { useWebcam2Store } from "../store/webcam2_store";
 const ReportPage = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [playRange, setPlayRange] = useState({ start: 0, end: 0 });
   const { results } = useResultStore();
   const { event_results } = useEventStore();
-
+  const { videoBlobUrl } = useWebcam2Store();
+  const videoRef = useRef();
   const {
     overallScore,
     overallReason,
     criteriaScores = [],
     vocabDifficulty,
     blockedWords = [],
-    eventScore,
-    eventReason,
+    eventScore = "채점 없음",
+    eventReason = "피드백 없음",
+    motionCaptions = [],
   } = results;
+
   console.log(results);
+  const handlePlaySegment = (sMin, sSec, eMin, eSec) => {
+    const start = parseInt(sMin) * 60 + parseInt(sSec);
+    const end = parseInt(eMin) * 60 + parseInt(eSec);
+    setPlayRange({ start, end });
+    setShowPopup(true);
+  };
+  useEffect(() => {
+    if (showPopup && videoRef.current) {
+      const video = videoRef.current;
+      video.currentTime = playRange.start;
+      video.play();
+
+      const interval = setInterval(() => {
+        if (video.currentTime >= playRange.end) {
+          video.pause();
+          clearInterval(interval);
+        }
+      }, 200);
+
+      return () => clearInterval(interval);
+    }
+  }, [showPopup, playRange]);
+
   //console.log(event_results);
   return (
     <div className="report-page">
       <div className="report-card">
-        <h2 className="report-title">분석 레포트</h2>
+        {showPopup && (
+          <div
+            className="video-popup-overlay"
+            onClick={() => setShowPopup(false)}
+          >
+            <div className="video-popup" onClick={(e) => e.stopPropagation()}>
+              <video
+                ref={videoRef}
+                src={videoBlobUrl}
+                controls
+                style={{ width: "100%", borderRadius: "12px" }}
+              />
+            </div>
+          </div>
+        )}
 
+        <h2 className="report-title">분석 레포트</h2>
         <section className="report-section">
           <h3 className="report-subtitle">1. 총평</h3>
           <p>
@@ -77,6 +122,48 @@ const ReportPage = () => {
               점수: <strong>{eventScore || "채점 없음"}</strong>
             </p>
             <p>{eventReason || "피드백 없음"}</p>
+          </section>
+        )}
+        {motionCaptions.length > 0 && (
+          <section className="report-section">
+            <h3 className="report-subtitle">5. 동작 분석 기반 캡션</h3>
+            <table className="report-table">
+              <thead>
+                <tr>
+                  <th>시작 시간</th>
+                  <th>종료 시간</th>
+                  <th>행동 라벨</th>
+                  <th>피드백</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {motionCaptions.map((item, idx) => (
+                  <tr key={idx}>
+                    <td>{`${item.startMin}분 ${item.startSec}초`}</td>
+                    <td>{`${item.endMin}분 ${item.endSec}초`}</td>
+                    <td>{item.label}</td>
+                    <td>{item.reason}</td>
+                    <td>
+                      {item.reason}
+                      <button
+                        style={{ marginLeft: "0.5rem" }}
+                        onClick={() =>
+                          handlePlaySegment(
+                            item.startMin,
+                            item.startSec,
+                            item.endMin,
+                            item.endSec
+                          )
+                        }
+                      >
+                        ▶ 재생
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
         )}
       </div>

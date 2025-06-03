@@ -5,7 +5,7 @@ export const useWebcam2Store = create((set, get) => ({
   holisticLandmarker: null,
   holisticData: [],
   processedHolisticData: null,
-
+  videoBlobUrl: null,
   videoChunks: [],
   mediaRecorder: null,
 
@@ -48,6 +48,12 @@ export const useWebcam2Store = create((set, get) => ({
 
   stopRecording: () => {
     console.log("⏹️ 녹화 중지");
+    const chunks = get().videoChunks;
+    if (chunks.length) {
+      const blob = new Blob(chunks, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      set({ videoBlobUrl: url });
+    }
     set({ isRecording: false });
   },
 
@@ -101,4 +107,5 @@ export const useWebcam2Store = create((set, get) => ({
       console.error("❌ 전송 실패:", err.response?.data || err.message);
     }
   },
+  setVideoBlobUrl: (url) => set({ videoBlobUrl: url }),
 }));
