@@ -10,16 +10,15 @@ import { useEventStore } from "../store/event_store";
 import { useWebcam2Store } from "../store/webcam2_store";
 import { exportConfigToJson } from "../util/config/config_exporter";
 import { triggerSingleRandomEvent } from "../util/event/triggerSingleRandomEvent";
+
 const RecordingPage = () => {
   const clear_event = useEventStore((state) => state.clear_event);
   const {
     isRecording,
     startRecording,
     stopRecording,
-    sendHolisticDataToServer,
     mediaRecorder,
-    saveVideoFile,
-    clearVideoChunks,
+    videoBlobUrl,
   } = useWebcam2Store();
 
   const { startAudioRecording, stopAudioRecording } = useAudioStore();
@@ -41,11 +40,21 @@ const RecordingPage = () => {
     }
     return () => clearInterval(timer);
   }, [isRecording]);
+
   useEffect(() => {
     return () => {
       clear_event();
     };
   }, []);
+
+  // ✅ 녹화가 끝나고 videoBlobUrl이 생성되면 자동 이동
+  useEffect(() => {
+    if (videoBlobUrl) {
+      console.log("✅ 녹화 완료, 페이지 이동:", videoBlobUrl);
+      navigate("/loading-live");
+    }
+  }, [videoBlobUrl]);
+
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60)
       .toString()
@@ -54,25 +63,18 @@ const RecordingPage = () => {
     return `${minutes}:${secs}`;
   };
 
-  const handleToggleRecording = async () => {
+  const handleToggleRecording = () => {
     if (isRecording) {
       stopRecording();
       stopAudioRecording();
       exportConfigToJson();
-      //stopRandomEventTriggerLoop();
+
       if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
+        mediaRecorder.stop(); // 이후 onstop → Blob 생성 → 상태 업데이트 → 이동
       }
-
-      await sendHolisticDataToServer();
-      saveVideoFile();
-      clearVideoChunks();
-
-      navigate("/loading-live");
     } else {
       startRecording();
       startAudioRecording();
-      //startRandomEventTriggerLoop();
       triggerSingleRandomEvent();
       const recorder = mediaRecorder;
       if (recorder && recorder.state === "inactive") {

@@ -8,52 +8,55 @@ export const useWebcam2Store = create((set, get) => ({
   videoBlobUrl: null,
   videoChunks: [],
   mediaRecorder: null,
-
-  recording_start_time: null, // ✅ 녹화 기준 시간
+  recordedBlob: null,
+  recording_start_time: null,
 
   setHolisticLandmarker: (landmarker) => {
     console.log("setHolisticLandmarker 호출됨:", landmarker);
     set({ holisticLandmarker: landmarker });
   },
 
-  setMediaRecorder: (recorder) => set({ mediaRecorder: recorder }),
+  setMediaRecorder: (recorder) => {
+    recorder.onstop = async () => {
+      const chunks = get().videoChunks;
+      if (!chunks.length) {
+        console.warn("⛔ videoChunks가 비어 있음");
+        return;
+      }
+
+      const blob = new Blob(chunks, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      set({ recordedBlob: blob, videoBlobUrl: url });
+      console.log("✅ Blob 생성 완료:", url);
+
+      // 후처리: holisticData 전송
+      const { sendHolisticDataToServer } = get();
+      await sendHolisticDataToServer();
+
+      // 여기서 navigate를 직접 호출할 수 없으니
+      // navigate("/loading-live")는 RecordingPage에서 상태 변화 감지 후 수행해야 함
+    };
+
+    set({ mediaRecorder: recorder });
+  },
+
   pushVideoChunk: (chunk) =>
     set((state) => ({ videoChunks: [...state.videoChunks, chunk] })),
   clearVideoChunks: () => set({ videoChunks: [] }),
-
-  saveVideoFile: () => {
-    const chunks = get().videoChunks;
-    if (!chunks.length) return;
-
-    const blob = new Blob(chunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "interview_recording.webm";
-    a.click();
-
-    URL.revokeObjectURL(url);
-    set({ videoChunks: [] });
-  },
 
   startRecording: () => {
     console.log("▶️ 녹화 시작");
     set({
       isRecording: true,
       holisticData: [],
-      recording_start_time: performance.now(), // ✅ 기준 시간 저장
+      recording_start_time: performance.now(),
+      videoBlobUrl: null,
+      recordedBlob: null,
     });
   },
 
   stopRecording: () => {
     console.log("⏹️ 녹화 중지");
-    const chunks = get().videoChunks;
-    if (chunks.length) {
-      const blob = new Blob(chunks, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      set({ videoBlobUrl: url });
-    }
     set({ isRecording: false });
   },
 
@@ -62,7 +65,6 @@ export const useWebcam2Store = create((set, get) => ({
     if (isRecording && recording_start_time !== null) {
       const timestamp = performance.now() - recording_start_time;
       const updated = [...holisticData, { ...newData, timestamp }];
-      console.log("🆕 데이터 추가됨");
       set({ holisticData: updated });
     }
   },
@@ -103,9 +105,20 @@ export const useWebcam2Store = create((set, get) => ({
       };
 
       set({ processedHolisticData: cleaned });
+      console.log("✅ Holistic 데이터 전송 준비 완료:", cleaned);
     } catch (err) {
       console.error("❌ 전송 실패:", err.response?.data || err.message);
     }
   },
+
   setVideoBlobUrl: (url) => set({ videoBlobUrl: url }),
+
+  setUploadedVideoFile: (file) => {
+    const url = URL.createObjectURL(file);
+    set({
+      videoBlobUrl: url,
+      recordedBlob: file,
+      sourceType: "upload", // 'live' or 'upload'
+    });
+  },
 }));

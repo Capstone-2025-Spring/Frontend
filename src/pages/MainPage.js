@@ -5,6 +5,8 @@ const MainPage = () => {
 
   return (
     <div style={styles.page}>
+      <img src="/main.png" alt="Main" style={styles.image} />
+
       <div style={styles.card}>
         <h1 style={styles.title}>
           오늘도 한다면 한다! <br />
@@ -29,15 +31,24 @@ const MainPage = () => {
   );
 };
 
+export default MainPage;
 const styles = {
   page: {
     minHeight: "100vh",
     background: "linear-gradient(to top right, #e0e7ff, #fff, #ffd6e0)",
     display: "flex",
+    flexDirection: "column", // ✅ 위아래 정렬
     justifyContent: "center",
     alignItems: "center",
     padding: "2rem",
     fontFamily: "'Segoe UI', sans-serif",
+    gap: "2rem", // ✅ 위아래 간격
+  },
+  image: {
+    width: "35%",
+    maxWidth: "720px",
+    borderRadius: "20px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
   },
   card: {
     background: "rgba(255, 255, 255, 0.85)",
@@ -90,5 +101,3 @@ const styles = {
     maxWidth: "400px",
   },
 };
-
-export default MainPage;

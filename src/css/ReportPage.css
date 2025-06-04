@@ -1,4 +1,7 @@
-/* ReportPage.css */
+/* ============================= */
+/* 전체 페이지 및 카드 스타일    */
+/* ============================= */
+
 .report-page {
   min-height: 100vh;
   background: linear-gradient(to top right, #e0e7ff, #fff, #ffd6e0);
@@ -18,6 +21,10 @@
   max-width: 800px;
   backdrop-filter: blur(10px);
 }
+
+/* ============================= */
+/* 제목, 섹션 및 테이블 스타일    */
+/* ============================= */
 
 .report-title {
   font-size: 2rem;
@@ -59,6 +66,33 @@
   font-weight: bold;
 }
 
+/* ============================= */
+/* 재생 버튼 (톤앤매너 적용)     */
+/* ============================= */
+
+.report-play-button {
+  background: linear-gradient(to right, #93c5fd, #60a5fa);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+  transition: all 0.25s ease;
+}
+
+.report-play-button:hover {
+  background: linear-gradient(to right, #60a5fa, #3b82f6);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+}
+
+/* ============================= */
+/* 팝업 비디오 오버레이 & 박스   */
+/* ============================= */
+
 .video-popup-overlay {
   position: fixed;
   top: 0;
@@ -67,12 +101,16 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
 
 .video-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: white;
   padding: 1rem;
   border-radius: 16px;

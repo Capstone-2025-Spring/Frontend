@@ -4,7 +4,6 @@ import "../css/UserCriteriaSelector.css";
 import { useConfigStore } from "../store/config_store";
 
 const recommendedCriteria = [
-  "정승제 스타일",
   "친절함",
   "역동적인",
   "날카로운",

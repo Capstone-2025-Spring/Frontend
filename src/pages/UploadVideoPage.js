@@ -2,16 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsPanel from "../container/SettingsPanel";
 import "../css/UploadVideoPage.css";
+import { useWebcam2Store } from "../store/webcam2_store";
 export const UploadVideoPage = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [results, setResults] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-
+  const { setUploadedVideoFile } = useWebcam2Store();
   const navigate = useNavigate();
   const handleUpload = async () => {
     if (!videoFile) return;
-
+    setUploadedVideoFile(videoFile); //
     setProcessing(true);
     setResults(null);
 

@@ -20,14 +20,25 @@ const ReportPage = () => {
     eventReason = "피드백 없음",
     motionCaptions = [],
   } = results;
+  useEffect(() => {
+    if (videoBlobUrl) {
+      console.log("✅ videoBlobUrl 확인:", videoBlobUrl);
+    }
+  }, [videoBlobUrl]);
 
-  console.log(results);
   const handlePlaySegment = (sMin, sSec, eMin, eSec) => {
     const start = parseInt(sMin) * 60 + parseInt(sSec);
     const end = parseInt(eMin) * 60 + parseInt(eSec);
     setPlayRange({ start, end });
     setShowPopup(true);
   };
+  useEffect(() => {
+    return () => {
+      if (videoBlobUrl) {
+        URL.revokeObjectURL(videoBlobUrl);
+      }
+    };
+  }, []);
   useEffect(() => {
     if (showPopup && videoRef.current) {
       const video = videoRef.current;
@@ -48,23 +59,34 @@ const ReportPage = () => {
   //console.log(event_results);
   return (
     <div className="report-page">
-      <div className="report-card">
-        {showPopup && (
-          <div
-            className="video-popup-overlay"
-            onClick={() => setShowPopup(false)}
-          >
-            <div className="video-popup" onClick={(e) => e.stopPropagation()}>
+      {showPopup && (
+        <div
+          className="video-popup-overlay"
+          onClick={() => setShowPopup(false)}
+        >
+          <div className="video-popup" onClick={(e) => e.stopPropagation()}>
+            {videoBlobUrl ? (
               <video
                 ref={videoRef}
                 src={videoBlobUrl}
                 controls
                 style={{ width: "100%", borderRadius: "12px" }}
               />
-            </div>
+            ) : (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "2rem",
+                  color: "#999",
+                }}
+              >
+                🎬 영상 데이터가 없습니다.
+              </div>
+            )}
           </div>
-        )}
-
+        </div>
+      )}
+      <div className="report-card">
         <h2 className="report-title">분석 레포트</h2>
         <section className="report-section">
           <h3 className="report-subtitle">1. 총평</h3>
@@ -145,9 +167,7 @@ const ReportPage = () => {
                     <td>{item.label}</td>
                     <td>{item.reason}</td>
                     <td>
-                      {item.reason}
                       <button
-                        style={{ marginLeft: "0.5rem" }}
                         onClick={() =>
                           handlePlaySegment(
                             item.startMin,
@@ -156,6 +176,7 @@ const ReportPage = () => {
                             item.endSec
                           )
                         }
+                        className="report-play-button"
                       >
                         ▶ 재생
                       </button>

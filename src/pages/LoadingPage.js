@@ -39,7 +39,7 @@ export default function LoadingPage() {
   return (
     <div className="upload-page">
       <div className="upload-card">
-        <h2 className="upload-title"> 영상 분석 중 입니다다...</h2>
+        <h2 className="upload-title"> 영상 분석 중 입니다...</h2>
         <p className="upload-status">{current_step}</p>
 
         <div className="progress-bar">

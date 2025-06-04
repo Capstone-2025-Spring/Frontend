@@ -1,26 +1,42 @@
-/* src/css/RecordingPage.css */
+/* 전체 페이지 */
 .recording-page {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
+  position: fixed;
+  inset: 0; /* top: 0; left: 0; right: 0; bottom: 0과 동일 */
   background-color: #f3f4f6;
-  padding: 2rem;
-  box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 스크롤 제거 */
 }
 
+/* 상단 헤더 */
 .recording-header {
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1rem;
+  padding: 1rem 2rem;
   border-bottom: 2px solid #e5e7eb;
-  margin-bottom: 1.5rem;
 }
 
 .recording-title {
   font-size: 2rem;
   color: #1f2937;
+}
+
+.recording-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.recording-timer {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #374151;
+  background-color: #e0f2fe;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
 }
 
 .record-button {
@@ -41,15 +57,18 @@
   background-color: #ef4444;
 }
 
+/* 메인 영역 (중앙 컨텐츠) */
 .recording-main {
+  flex: 1 1 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100% - 180px);
+  overflow: hidden;
 }
 
+/* 우측 하단 웹캠 */
 .recording-webcam {
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   right: 20px;
   width: 220px;
@@ -61,26 +80,13 @@
   background-color: #fff;
 }
 
-.recording-controls {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-.recording-timer {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #374151;
-  background-color: #e0f2fe;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-}
+/* 이벤트 팝업 */
 .Event {
-  position: fixed; /* 화면 고정 */
+  position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* 정중앙 배치 */
-  width: 600px; /* 꽤 큰 크기 */
+  transform: translate(-50%, -50%);
+  width: 600px;
   max-width: 90vw;
   height: 400px;
   max-height: 90vh;
@@ -93,7 +99,6 @@
   transition: all 0.3s ease;
 }
 
-/* 애니메이션 효과 */
 @keyframes popupFadeIn {
   0% {
     opacity: 0;
