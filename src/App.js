@@ -10,6 +10,7 @@ import RecordingPage from "./pages/RecordingPage";
 import ReportPage from "./pages/ReportPage";
 import SettingPage from "./pages/SettingPage";
 import { UploadVideoPage } from "./pages/UploadVideoPage";
+import DummyReportPage from "./pages/dummyReport";
 const App = () => {
   return (
     <Router>
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/upload" element={<UploadVideoPage />} />
         <Route path="/loading" element={<LoadingPage />} />
         <Route path="/loading-live" element={<LoadingPageForLive />} />
+        <Route path="/dummy" element={<DummyReportPage />} />
       </Routes>
     </Router>
   );
