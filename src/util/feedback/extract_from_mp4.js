@@ -63,8 +63,8 @@ export async function extractHolisticFromMp4(mp4File, onProgress) {
 
       // === 설정 ===
       const FPS = 30;
-      const FRAME_SKIP = 5; // 3프레임마다 하나 추출
-      const interval = FRAME_SKIP / FPS; // == 0.1초 간격
+      const FRAME_SKIP = 5;
+      const interval = FRAME_SKIP / FPS;
 
       holistic.setOptions({
         modelComplexity: 1,
@@ -74,9 +74,10 @@ export async function extractHolisticFromMp4(mp4File, onProgress) {
         minDetectionConfidence: 0.5,
         minTrackingConfidence: 0.5,
       });
-
       holistic.onResults((results) => {
-        const timestamp = Date.now(); // 실제 시간 기준
+        // 변경된 부분: 영상 시간 기준 ms 타임스탬프
+        const timestamp = Math.round(video.currentTime * 1000); // 밀리초 변환
+
         const poseOnly =
           results.poseLandmarks?.map((lm) => ({
             x: lm.x,

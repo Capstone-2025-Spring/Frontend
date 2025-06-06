@@ -40,6 +40,20 @@ export async function processMp4AndRequestFeedback(mp4File) {
         estimated_time: `프레임 ${cur}/${total}`,
       });
     });
+    // 여기서 바로 다운로드 처리
+    const jsonStr = JSON.stringify(holisticJson, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "holistic.json";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
     console.log("✅ [POSE] Holistic JSON 추출 완료", holisticJson);
 
     // Step 3: config 가져오기
