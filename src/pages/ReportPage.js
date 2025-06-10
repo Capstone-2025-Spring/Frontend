@@ -125,9 +125,6 @@ const ReportPage = () => {
           </p>
           {blockedWords.length > 0 && (
             <>
-              <p style={{ marginTop: "0.5rem" }}>
-                부적절하거나 주제에서 벗어난 단어:
-              </p>
               <ul>
                 {blockedWords.map((word, idx) => (
                   <li key={idx}>🟥 {word}</li>

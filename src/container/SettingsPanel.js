@@ -77,8 +77,8 @@ const SettingsPanel = () => {
           <option value="초등학교">초등학교</option>
           <option value="중학교">중학교</option>
           <option value="고등학교">고등학교</option>
-          <option value="고등학교">성인</option>
-          <option value="고등학교">고령자</option>
+          <option value="성인">성인</option>
+          <option value="고령자">고령자</option>
         </select>
       </div>
 
