@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+#Edu-Mate Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Edu-Mate는 예비 교사 및 발표자들을 위한 AI 기반 강의 피드백 시스템입니다. 이 프론트엔드는 사용자로부터 웹캠, 마이크, 교안 파일 등을 입력받아 백엔드 및 AI 서버와 연동하여 실시간/업로드 기반의 분석 결과를 제공합니다.
 
-## Available Scripts
+## 기술 스택
 
-In the project directory, you can run:
+- React.js
+- Zustand (상태 관리)
 
-### `npm start`
+##실행 방법
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npm install
+npm start
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+##페이지 구성
+| 경로              | 컴포넌트                 | 설명                    |
+| --------------- | -------------------- | --------------------- |
+| `/`             | `MainPage`           | 초기 홈 화면               |
+| `/checkMedia`   | `CheckMediaPage`     | 웹캠/마이크 동작 테스트         |
+| `/questions`    | `QuestionPage`       | 사용자 맞춤 질문/피드백 설정      |
+| `/settings`     | `SettingPage`        | 사용자 시뮬레이션 설정값 지정      |
+| `/recording`    | `RecordingPage`      | 실시간 강의 녹화 및 분석 시작     |
+| `/upload`       | `UploadVideoPage`    | 영상 파일 업로드 기반 분석       |
+| `/loading`      | `LoadingPage`        | 분석 결과 대기 중 (업로드 분석)   |
+| `/loading-live` | `LoadingPageForLive` | 실시간 녹화 후 대기 화면        |
+| `/report`       | `ReportPage`         | 최종 피드백 결과 시각화         |
+| `/dummy`        | `DummyReportPage`    | 테스트용 결과 페이지           |
+| `/admin`        | `AdminPage`          | 관리자용 기능 페이지, 백오피스 (설정 수정 등) |
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
